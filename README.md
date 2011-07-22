@@ -3,8 +3,9 @@ Logging to Logentries in Ruby
 
 This is a Logentries library for logging from Ruby platforms, including Heroku.
 
-It is available on github and <http://rubygems.org/>.
-<https://github.com/logentries/le_ruby>
+It is available on github <https://github.com/logentries/le_ruby> and rubygems
+<http://rubygems.org/>.
+
 
 Example
 -------
@@ -17,12 +18,9 @@ Example
 Howto
 -----
 
-
-To implement this, you must first register your account details with
-Logentries.
-
-Once you have created your account, you must obtain the user-key for your
-account, which allows the gem to access your account on the server.
+You must first register your account details with Logentries.  Once you have
+created your account, you must obtain the user-key for your account, which
+allows the gem to access your account on the server.
 
 To obtain your user-key simply run the getKey.rb script with the argument
 ``--key``, e.g
@@ -83,9 +81,11 @@ file, add either of the following:
 
 This will set the appropriate rails logger to use the logentries logger.
 
-The first of the 2 arguments above is your user-key that you obtained using ``getKey.rb`` 
+The first of the 2 arguments above is your user-key that you obtained using
+``getKey.rb`` 
 
-The second is the name of the host you set up followed by the name of the log file. 
+The second is the name of the host you set up followed by the name of the log
+file. 
 
 If you used the default settings by running ``ruby getKey.rb --register``, then
 ``Heroku/Heroku.log`` is the correct parameter here.
