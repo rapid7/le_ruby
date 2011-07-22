@@ -9,9 +9,9 @@ It is available on github and <http://rubygems.org/>.
 Example
 -------
 
-  logger.info("information message")
-  logger.warn("warning message")
-  logger.debug("debug message")
+    logger.info("information message")
+    logger.warn("warning message")
+    logger.debug("debug message")
 
 
 Howto
@@ -26,7 +26,7 @@ account, which allows the gem to access your account on the server.
 
 To obtain your user-key simply run the getKey.rb script with the argument
 ``--key``, e.g
-  ruby getKey.rb --key
+    ruby getKey.rb --key
 
 You will be asked for your login credentials which you registered on the
 website and it will print your user-key.
@@ -40,7 +40,7 @@ your logs in, these can be created either using the Logentries user interface
 or with the getKey.rb script.
 
 To use the getKey.rb script, the command is as follows:
-  ruby getKey.rb --register
+    ruby getKey.rb --register
 
 This will prompt you for your user-key and then set up the default settings
 (recommended) which are:   Host: Heroku Log: Heroku.log
@@ -49,7 +49,7 @@ You can choose a name for both the Host and the log file yourself with the
 ``getKey.rb`` script.
 
 Simply type (parameters ``-h`` and ``-l`` are both optional)
-  ruby getType.rb --register -h HOSTNAME* -l LOGNAME* 
+    ruby getType.rb --register -h HOSTNAME* -l LOGNAME* 
 
 At any time you can type ``ruby getType.rb --help`` for a more detailed usage.
 
@@ -61,10 +61,10 @@ Heroku
 To install the gem you must edit the Gemfile in your local heroku environment
 
 Add the following line:
-  gem 'le', '1.4'
+    gem 'le', '1.4'
 
 Then from the cmd line run the following command:
-  bundle install
+    bundle install
 
 This will install the gem on your local environment.
 
