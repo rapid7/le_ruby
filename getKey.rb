@@ -10,7 +10,6 @@
 require 'rubygems'
 require 'net/https'
 require 'net/http'
-require 'optparse'
 
 def die(message)
 	puts message
