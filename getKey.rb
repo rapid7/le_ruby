@@ -1,3 +1,12 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+#
+# Logentries Ruby monitoring agent
+# Copyright 2010,2011 Logentries, Jlizard
+# Mark Lacomber <marklacomber@gmail.com>
+#
+
 require 'rubygems'
 require 'net/https'
 require 'net/http'
