@@ -45,6 +45,7 @@ def obtainKey
 
 	http = Net::HTTP.new('logentries.com', 443)
 	http.use_ssl = true
+	http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
 	cred = sprintf("username=%s&password=%s", username, password)
 
@@ -84,6 +85,7 @@ def register(host = 'Heroku', file = 'Heroku.log')
 
 	http = Net::HTTP.new('logentries.com', 443)
 	http.use_ssl = true
+	http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
 	cred = sprintf("username=%s&password=%s", username, password)
 
@@ -105,6 +107,7 @@ def register(host = 'Heroku', file = 'Heroku.log')
 	
 	http = Net::HTTP.new('api.logentries.com', 443)
 	http.use_ssl = true
+	http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
 	begin
    		resp = http.post2('/', request)
