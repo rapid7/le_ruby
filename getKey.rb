@@ -53,7 +53,7 @@ def obtainKey
 	begin
 		resp = http.post('/agent/user-key/', cred, {'Referer' => 'https://logentries.com/login/'})
 	rescue OpenSSL::SSL::SSLError
-		die("Please Install openssl gem to use the script")
+		die("Please Ensure openssl gem is installed to use the script")
 	end
 
 	if resp.message == "OK"
@@ -84,7 +84,7 @@ def register(host = 'Heroku', file = 'Heroku.log')
 	begin
 		resp = http.post('/agent/user-key/', cred, {'Referer' => 'https://logentries.com/login/'})
 	rescue OpenSSL::SSL::SSLError
-		die("Please Install openssl gem to use the script")
+		die("Please Ensure openssl gem is installed to use the script")
 	end
 
 	if resp.message != "OK"
@@ -103,7 +103,7 @@ def register(host = 'Heroku', file = 'Heroku.log')
 	begin
    		resp = http.post2('/', request)
 	rescue OpenSSL::SSL::SSLError
-		die("Please Install openssl gem to use the script")
+		die("Please Ensure openssl gem is installed to use the script")
 	end
 
 	data = JSON.parse(resp.body)
@@ -115,7 +115,7 @@ def register(host = 'Heroku', file = 'Heroku.log')
 	begin
 		resp, data = http.post2('/', full)
 	rescue OpenSSL::SSL::SSLError
-		die("Please Install openssl gem to use the script")
+		die("Please Ensure openssl gem is installed to use the script")
 	end
 
 	if resp.message != "OK"
