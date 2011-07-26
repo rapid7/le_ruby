@@ -28,20 +28,33 @@ rescue LoadError
 	die("Please Install openssl gem to use this script")
 end
 
+begin
+	require 'highline/import'
+rescue LoadError
+	die("Please Install highline/import gem to use this script")
+end
+
+def getPassword(prompt="Password: ")
+	ask(prompt) {|q| q.echo = "*"}
+end
+
 def obtainKey
 		
 	print "\nUsername: "
 	username = $stdin.gets.chomp
 
-	print "Password: "
-	password = $stdin.gets.chomp
+	password = getPassword()
 
 	http = Net::HTTP.new('logentries.com', 443)
 	http.use_ssl = true
 
 	cred = sprintf("username=%s&password=%s", username, password)
 
-	resp = http.post('/agent/user-key/', cred, {'Referer' => 'https://logentries.com/login/'})
+	begin
+		resp = http.post('/agent/user-key/', cred, {'Referer' => 'https://logentries.com/login/'})
+	rescue OpenSSL::SSL::SSLError
+		die("Please Install openssl gem to use the script")
+	end
 
 	if resp.message == "OK"
 		data = JSON.parse(resp.body)
@@ -61,15 +74,18 @@ def register(host = 'Heroku', file = 'Heroku.log')
 	print "\nUsername: "
 	username = $stdin.gets.chomp
 
-	print "Password: "
-	password = $stdin.gets.chomp
+	password = getPassword()
 
 	http = Net::HTTP.new('logentries.com', 443)
 	http.use_ssl = true
 
 	cred = sprintf("username=%s&password=%s", username, password)
 
-	resp = http.post('/agent/user-key/', cred, {'Referer' => 'https://logentries.com/login/'})
+	begin
+		resp = http.post('/agent/user-key/', cred, {'Referer' => 'https://logentries.com/login/'})
+	rescue OpenSSL::SSL::SSLError
+		die("Please Install openssl gem to use the script")
+	end
 
 	if resp.message != "OK"
 		die("Incorrect details. Please Try Again")
@@ -84,7 +100,11 @@ def register(host = 'Heroku', file = 'Heroku.log')
 	http = Net::HTTP.new('api.logentries.com', 443)
 	http.use_ssl = true
 
-   	resp = http.post2('/', request)
+	begin
+   		resp = http.post2('/', request)
+	rescue OpenSSL::SSL::SSLError
+		die("Please Install openssl gem to use the script")
+	end
 
 	data = JSON.parse(resp.body)
 
@@ -92,7 +112,11 @@ def register(host = 'Heroku', file = 'Heroku.log')
 
 	full = sprintf("host_key=%s&name=%s&user_key=%s&request=new_log&filename=%s&follow=true&type=""", host_key, file, user_key, file)
 
-	resp, data = http.post2('/', full)
+	begin
+		resp, data = http.post2('/', full)
+	rescue OpenSSL::SSL::SSLError
+		die("Please Install openssl gem to use the script")
+	end
 
 	if resp.message != "OK"
 		die("Incorrect details. Please Try Again")
