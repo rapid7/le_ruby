@@ -33,7 +33,7 @@ def obtainKey
 	print "\nUsername: "
 	username = $stdin.gets.chomp
 
-	print "\nPassword: "
+	print "Password: "
 	
 	begin
 		system "stty -echo"
@@ -73,7 +73,7 @@ def register(host = 'Heroku', file = 'Heroku.log')
 	print "\nUsername: "
 	username = $stdin.gets.chomp
 
-	print "\nPassword: "
+	print "Password: "
 	
 	begin
 		system "stty -echo"
@@ -131,7 +131,8 @@ def register(host = 'Heroku', file = 'Heroku.log')
 		die("Incorrect details. Please Try Again")
 	end
 
-	puts resp.message
+	endMessage = sprintf("Successfully Created Host: '%s' and LogFile: '%s' on Logentries", host, file)
+	puts endMessage
 
 	exit(0)
 end
