@@ -28,22 +28,20 @@ rescue LoadError
 	die("Please Install openssl gem to use this script")
 end
 
-begin
-	require 'highline/import'
-rescue LoadError
-	die("Please Install highline/import gem to use this script")
-end
-
-def getPassword(prompt="Password: ")
-	ask(prompt) {|q| q.echo = "*"}
-end
-
 def obtainKey
 		
 	print "\nUsername: "
 	username = $stdin.gets.chomp
 
-	password = getPassword()
+	print "\nPassword: "
+	
+	begin
+		system "stty -echo"
+		password = $stdin.gets.chomp
+		print "\n"
+	ensure
+		system "stty echo"
+	end
 
 	http = Net::HTTP.new('logentries.com', 443)
 	http.use_ssl = true
@@ -74,7 +72,15 @@ def register(host = 'Heroku', file = 'Heroku.log')
 	print "\nUsername: "
 	username = $stdin.gets.chomp
 
-	password = getPassword()
+	print "\nPassword: "
+	
+	begin
+		system "stty -echo"
+		password = $stdin.gets.chomp
+		print "\n"
+	ensure
+		system "stty echo"
+	end
 
 	http = Net::HTTP.new('logentries.com', 443)
 	http.use_ssl = true
