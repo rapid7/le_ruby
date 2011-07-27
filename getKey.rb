@@ -103,7 +103,7 @@ def register(host = 'Heroku', file = 'Heroku.log')
 
 	user_key = data["user_key"]
 
-	request = sprintf("distver=hero&name=%s&distname=Debian&hostname=Heroku&request=register&system=Linux&user_key=%s", host, user_key)
+	request = sprintf("distver=hero&name=%s&distname=Debian&hostname=%s&request=register&system=Linux&user_key=%s", host, host, user_key)
 	
 	http = Net::HTTP.new('api.logentries.com', 443)
 	http.use_ssl = true
