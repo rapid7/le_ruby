@@ -68,7 +68,7 @@ def obtainKey
 	end
 end
 
-def register(host = 'Heroku', file = 'Heroku.log')
+def register(host = 'RubyHost', file = 'RubyApp.log')
 
 	print "\nUsername: "
 	username = $stdin.gets.chomp
@@ -143,8 +143,8 @@ def printUsage
 	puts "          \t--register <parameter(s)>\tCreate Host and LogFile on Logentries"
 	puts "		--help\t\t\t\tShow the current screen"
 	puts "\nParameters for  --register:"
-	puts "\t\t\t-h Host(Optional)\tName of Host to be created, else Default Host 'Heroku' will be used"
-	puts "\t\t\t-l Log(Optional)\tName of Log to be created, else Default Log 'Heroku.log' will be used"
+	puts "\t\t\t-h Host(Optional)\tName of Host to be created, else Default Host 'RubyHost' will be used"
+	puts "\t\t\t-l Log(Optional)\tName of Log to be created, else Default Log 'RubyApp.log' will be used"
 end
 
 unless ARGV.length >= 1
@@ -165,10 +165,10 @@ if ARGV[0] == "--register"
 		exit(1)
 	elsif ARGV.length == 3
 		if ARGV[1] == '-h'
-			register(ARGV[2], 'Heroku.log')
+			register(ARGV[2], 'RubyApp.log')
 			exit(0)
 		elsif ARGV[1] == '-l'
-			register('Heroku', ARGV[2])
+			register('RubyHost', ARGV[2])
 			exit(0)
 		else
 			printUsage
