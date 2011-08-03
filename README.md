@@ -10,9 +10,9 @@ It is available on github <https://github.com/logentries/le_ruby> and rubygems
 Example
 -------
 
-    logger.info("information message")
-    logger.warn("warning message")
-    logger.debug("debug message")
+    Rails.logger.info("information message")
+    Rails.logger.warn("warning message")
+    Rails.logger.debug("debug message")
 
 
 Howto
