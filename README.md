@@ -59,9 +59,11 @@ Heroku
 To install the gem you must edit the Gemfile in your local heroku environment
 
 Add the following line:
-    gem 'le', '1.4'
+
+    gem 'le', '1.5'
 
 Then from the cmd line run the following command:
+
     bundle install
 
 This will install the gem on your local environment.
