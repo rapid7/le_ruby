@@ -46,6 +46,14 @@ module Le
 	
 	def deliver(message)
 
+          if @conn == nil
+             begin
+                createSocket(@key, @location)
+             rescue OpenSSL::SSL::SSLError, TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError => e
+                $stderr.puts "WARNING: #{e.class} Could not write log. No connection to Logentries #{e.message}"
+                return
+             end
+          end
           # Sends the log to the Logentries Server
           begin
 	    @conn.print(message + "\r\n")
