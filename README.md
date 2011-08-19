@@ -23,7 +23,7 @@ created your account, you must obtain the user-key for your account, which
 allows the gem to access your account on the server.
 
 To obtain your user-key simply run the getKey.rb script with the argument
-``--key``, e.g
+`--key`, e.g
     ruby getKey.rb --key
 
 You will be asked for your login credentials which you registered on the
@@ -44,12 +44,12 @@ This will prompt you for your user-key and then set up the default settings
 (recommended) which are:   Host: Heroku Log: Heroku.log
 
 You can choose a name for both the Host and the log file yourself with the
-``getKey.rb`` script.
+`getKey.rb` script.
 
-Simply type (parameters ``-h`` and ``-l`` are both optional)
+Simply type (parameters `-h` and `-l` are both optional)
     ruby getType.rb --register -h HOSTNAME* -l LOGNAME* 
 
-At any time you can type ``ruby getType.rb --help`` for a more detailed usage.
+At any time you can type `ruby getType.rb --help` for a more detailed usage.
 
 Now you are setup to send logs to the Logentries server.
 
@@ -74,23 +74,23 @@ server as it is included in the Gemfile.
 The next step is to configure the default rails logger to use the logentries
 logger.
 
-Pending which rails logger you wish to use, in your ``config/environment.rb``
+Pending which rails logger you wish to use, in your `config/environment.rb`
 file, add either of the following:
 
-- ``ActionController::Base.logger = Le.new('userkey', 'Heroku/Heroku.log')``
-- ``ActiveRecord::Base.logger = Le.new('userkey', 'Heroku/Heroku.log')``
-- ``Rails.logger = Le.new('userkey', 'Heroku/Heroku.log')``
+- `ActionController::Base.logger = Le.new('userkey', 'Heroku/Heroku.log')`
+- `ActiveRecord::Base.logger = Le.new('userkey', 'Heroku/Heroku.log')`
+- `Rails.logger = Le.new('userkey', 'Heroku/Heroku.log')`
 
 This will set the appropriate rails logger to use the logentries logger.
 
 The first of the 2 arguments above is your user-key that you obtained using
-``getKey.rb`` 
+`getKey.rb` 
 
 The second is the name of the host you set up followed by the name of the log
 file. 
 
-If you used the default settings by running ``ruby getKey.rb --register``, then
-``Heroku/Heroku.log`` is the correct parameter here.
+If you used the default settings by running `ruby getKey.rb --register`, then
+`Heroku/Heroku.log` is the correct parameter here.
 
 From anywhere in the views and controllers, the logger command can now be used
 to log events. Also data on pages being opened and rendered will be forwarded
