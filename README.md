@@ -24,7 +24,7 @@ allows the gem to access your account on the server.
 
 To obtain your user-key simply run the getKey.rb script with the argument
 `--key`, e.g
-    ruby getKey.rb --key
+    `ruby getKey.rb --key`
 
 You will be asked for your login credentials which you registered on the
 website and it will print your user-key.
