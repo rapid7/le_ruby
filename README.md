@@ -54,7 +54,7 @@ Simply type
 
 At any time you can type `ruby getType.rb --help` for a more detailed usage.
 
-Now you are setup to send logs to the Logentries server.
+Now you are set up to send logs to the Logentries server.
 
 Heroku
 ------
