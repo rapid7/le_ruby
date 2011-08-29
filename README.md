@@ -38,7 +38,7 @@ your logs in, these can be created either using the Logentries user interface
 or with the getKey.rb script.
 
 To use the getKey.rb script, the command is as follows:
-    ruby getKey.rb --register
+    `ruby getKey.rb --register`
 
 This will prompt you for your user-key and then set up the default settings
 (recommended) which are:   Host: Heroku Log: Heroku.log
@@ -47,6 +47,7 @@ You can choose a name for both the Host and the log file yourself with the
 `getKey.rb` script.
 
 Simply type (parameters `-h` and `-l` are both optional)
+
     ruby getType.rb --register -h HOSTNAME* -l LOGNAME* 
 
 At any time you can type `ruby getType.rb --help` for a more detailed usage.
