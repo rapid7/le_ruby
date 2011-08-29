@@ -46,9 +46,11 @@ This will prompt you for your user-key and then set up the default settings
 You can choose a name for both the Host and the log file yourself with the
 `getKey.rb` script.
 
-Simply type (parameters `-h` and `-l` are both optional)
+Simply type 
 
     ruby getType.rb --register -h HOSTNAME* -l LOGNAME* 
+    
+`*(parameters -h and -l are both optional)`
 
 At any time you can type `ruby getType.rb --help` for a more detailed usage.
 
