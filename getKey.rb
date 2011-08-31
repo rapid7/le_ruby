@@ -135,6 +135,8 @@ def register(host = 'RubyHost', file = 'RubyApp.log')
 	endMessage = sprintf("Successfully Created Host: '%s' and LogFile: '%s' on Logentries", host, file)
 	puts endMessage
 
+	puts sprintf("Use the following format for location in your config: '%s/%s'", host, file)
+
 	exit(0)
 end
 
