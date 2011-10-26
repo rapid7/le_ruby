@@ -60,19 +60,16 @@ server as it is included in the Gemfile.
 The next step is to configure the default rails logger to use the logentries
 logger.
 
-Pending which rails logger you wish to use, in your `config/environment.rb`
-file, add either of the following:
+In your `config/environment.rb` file, add either of the following:
 
-- `ActionController::Base.logger = Le.new('userkey', 'Heroku/Heroku.log')`
-- `ActiveRecord::Base.logger = Le.new('userkey', 'Heroku/Heroku.log')`
-- `Rails.logger = Le.new('userkey', 'Heroku/Heroku.log')`
+- `Rails.logger = Le.new('LOGENTRIES_ACCOUNT_KEY', 'LOGENTRIES_LOCATION')`
 
-This will set the appropriate rails logger to use the logentries logger.
+This will set the rails logger to use the Logentries logger.
 
 The first of the 2 arguments above is your account-key which you obtained earlier 
 from the Logentries UI.
 
-The second is the name of the host you set up followed by the name of the log
+The second is the file location which is the name of the host you set up followed by the name of the log
 file in the format  `hostname/logname`
 
 If you used the default settings by running `ruby getKey.rb --register`, then
