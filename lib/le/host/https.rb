@@ -17,20 +17,23 @@ module Le
     class HTTPS
       include Le::Host::HelperMethods	
       
-      attr_reader :deliverer
+      attr_reader :deliverer, :local_bool
 
-      def initialize(key, location)
-
-        @deliverer = Le::Host::HTTPS::TCPSOCKET.new(key, location)
-           
+      def initialize(key, location, local)
+	@local_bool = local
+	if not local
+        	@deliverer = Le::Host::HTTPS::TCPSOCKET.new(key, location)
+        end   
       end
 
       def write(message)
-
-        # In the Heroku environment, this puts command will write the message to standard Heroku logs also
-        puts message
-        # Deliver the message to logentries via TCP
-	@deliverer.deliver(message)
+	
+	if @local_bool
+        	puts message
+        else
+        	# Deliver the message to logentries via TCP
+		@deliverer.deliver(message)
+	end
       end
 
       def close
