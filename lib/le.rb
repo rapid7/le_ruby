@@ -13,9 +13,9 @@ require 'logger'
 
 module Le
 
- def self.new(key, location)
+ def self.new(key, location, local=false)
 
-   host = Le::Host.new(key, location)      
+   host = Le::Host.new(key, location, local)      
    logger = Logger.new(host)
    
    logger.formatter = host.formatter
