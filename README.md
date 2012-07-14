@@ -49,7 +49,7 @@ This will install the gem on your local environment.
 The next step is to configure the default rails logger to use the logentries
 logger.
 
-In your `config/environment.rb` file, add either of the following:
+In your `config/environment.rb` file, add the following:
 
 - `Rails.logger = Le.new('LOGENTRIES_ACCOUNT_KEY', 'LOGENTRIES_LOCATION')`
 
