@@ -6,7 +6,7 @@
 # Copyright 2010,2011 Logentries, Jlizard
 # Mark Lacomber <marklacomber@gmail.com>
 #
-VERSION = "1.1"
+LE_VERSION = "1.1"
 
 require 'rubygems'
 require 'net/https'
