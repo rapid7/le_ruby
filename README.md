@@ -38,7 +38,7 @@ To install the gem you must edit the Gemfile in your local heroku environment
 
 Add the following line:
 
-    gem 'le', '1.8'
+    gem 'le', '1.8.1'
 
 Then from the cmd line run the following command:
 
@@ -61,7 +61,9 @@ earlier from the Logentries UI.
 The second is the file location which is the name of the host you set up
 followed by the name of the log file in the format `hostname/logname`.
 
-If you are running your app locally, you add a third boolean parameter 'true'.
+Local Logging
+---------------
+If you are running your app locally, you can add a third boolean parameter 'true'.
 This will route the logs to the
 
 console rather than Logentries. Be sure to set to false or remove when you are
