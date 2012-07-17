@@ -27,12 +27,12 @@ module Le
 
  def self.checkParams(key, location)
 	if key == nil or location == nil
-		puts "LE: Incorrect parameters for Logentries Plugin"
+		puts "\nLE: Incorrect parameters for Logentries Plugin!\n"
 	end
 
 	# Check if the key is valid UUID format
 	if (key =~ /\A(urn:uuid:)?[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}\z/i) == nil
-		puts "LE: It appears the LOGENTRIES_ACCOUNT_KEY you entered is invalid"
+		puts "\nLE: It appears the LOGENTRIES_ACCOUNT_KEY you entered is invalid!\n"
 	end
  end
 end
