@@ -64,6 +64,9 @@ followed by the name of the log file in the format `hostname/logname`.
 Local Logging
 ---------------
 If you are running your app locally, you can add a third boolean parameter 'true'.
+
+- `Rails.logger = Le.new('LOGENTRIES_ACCOUNT_KEY', 'LOGENTRIES_LOCATION', true)`
+
 This will route the logs to the
 
 console rather than Logentries. Be sure to set to false or remove when you are
