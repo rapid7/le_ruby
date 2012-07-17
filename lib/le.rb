@@ -15,6 +15,8 @@ module Le
 
  def self.new(key, location, local=false)
 
+   self.checkParams(key, location)
+
    host = Le::Host.new(key, location, local)      
    logger = Logger.new(host)
    
@@ -23,4 +25,14 @@ module Le
    logger  
  end
 
+ def self.checkParams(key, location)
+	if key == nil or location == nil
+		puts "LE: Incorrect parameters for Logentries Plugin"
+	end
+
+	# Check if the key is valid UUID format
+	if (key =~ /\A(urn:uuid:)?[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}\z/i) == nil
+		puts "LE: It appears the LOGENTRIES_ACCOUNT_KEY you entered is invalid"
+	end
+ end
 end
