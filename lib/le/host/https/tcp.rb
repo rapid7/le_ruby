@@ -12,14 +12,15 @@ module Le
     class HTTPS
 
       class TCPSOCKET
+	require 'uri'
 
 	attr_accessor :sock, :conn, :key, :location
 	def initialize(key, location)
 
           @key = key
-          @location = location
+          @location = URI::encode(location)
 	  begin
-          	createSocket(key, location)
+          	createSocket(@key, @location)
 	  rescue OpenSSL::SSL::SSLError, TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError => e
 		$stderr.puts "WARNING: #{e.class} creating the connection to Logentries. #{e.message}"
           end
