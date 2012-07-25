@@ -38,10 +38,8 @@ module Le
           @conn.connect
 
           # Set up connection with Logentries API to receive messages in chunks, i.e, logs
-          request = sprintf("PUT %s HTTP/1.1\r\n", addr)
-          @conn.print(request)
-          @conn.print("Accept-Encoding: identity\r\n")
-          @conn.print("Transfer_Encoding: chunked\r\n\r\n")
+          request = sprintf("PUT %s HTTP/1.1\r\n\r\n", addr)
+          @conn.write(request)
 
         end
 	
