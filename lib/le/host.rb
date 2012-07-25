@@ -29,11 +29,16 @@ module Le
       end
   
       def format_message(msg_in, severity)
+	msg_in = msg_in.lstrip
 	msg_out = ""
 	msg_out << "severity=#{severity}, "
 
-	msg_out << msg_in
-        
+	case msg_in
+	when String
+		msg_out << msg_in
+	else
+		msg_out << msg_in.inspect
+        end
 	msg_out
       end
     end
