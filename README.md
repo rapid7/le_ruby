@@ -51,9 +51,13 @@ logger.
 
 In your `config/environment.rb` file, add the following:
 
-- `Rails.logger = Le.new('LOGENTRIES_ACCOUNT_KEY', 'LOGENTRIES_LOCATION')`
+    `if Rails.env.development?
+        Rails.logger = Le.new('LOGENTRIES_ACCOUNT_KEY', 'LOGENTRIES_LOCATION', true)
+    else
+        Rails.logger = Le.new('LOGENTRIES_ACCOUNT_KEY', 'LOGENTRIES_LOCATION')
+    end`
 
-This will set the rails logger to use the Logentries logger.
+This will set the rails logger to use the Logentries logger in production and log to the console in development environment.
 
 The first of the 2 arguments above is your account-key which you obtained
 earlier from the Logentries UI.
@@ -61,18 +65,4 @@ earlier from the Logentries UI.
 The second is the file location which is the name of the host you set up
 followed by the name of the log file in the format `hostname/logname`.
 
-Local Logging
----------------
-If you are running your app locally, you can add a third boolean parameter 'true'.
-
-- `Rails.logger = Le.new('LOGENTRIES_ACCOUNT_KEY', 'LOGENTRIES_LOCATION', true)`
-
-This will route the logs to the
-
-console rather than Logentries. Be sure to set to false or remove when you are
-deploying your app.
-
-From anywhere in the views and controllers, the logger command can now be used
-to log events. Also data on pages being opened and rendered will be forwarded
-to your Logentries account.
-
+Now, simply use Rails.logger.info("message") inside your code to send logs to Logentries
