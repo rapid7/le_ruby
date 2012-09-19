@@ -65,4 +65,4 @@ earlier from the Logentries UI.
 The second is the file location which is the name of the host you set up
 followed by the name of the log file in the format `hostname/logname`.
 
-Now, simply use Rails.logger.info("message") inside your code to send logs to Logentries
+Now, simply use `Rails.logger.info("message")` inside your code to send logs to Logentries
