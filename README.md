@@ -51,11 +51,11 @@ logger.
 
 In your `config/environment.rb` file, add the following:
 
-    `if Rails.env.development?
+    if Rails.env.development?
         Rails.logger = Le.new('LOGENTRIES_ACCOUNT_KEY', 'LOGENTRIES_LOCATION', true)
     else
         Rails.logger = Le.new('LOGENTRIES_ACCOUNT_KEY', 'LOGENTRIES_LOCATION')
-    end`
+    end
 
 This will set the rails logger to use the Logentries logger in production and log to the console in development environment.
 
