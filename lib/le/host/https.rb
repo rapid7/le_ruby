@@ -7,9 +7,6 @@
 # Mark Lacomber <marklacomber@gmail.com>
 #
 
-require 'socket'
-require 'openssl'
-
 require File.join(File.dirname(__FILE__), 'https', 'tcp')
 
 module Le
@@ -19,10 +16,10 @@ module Le
       
       attr_reader :deliverer, :local_bool
 
-      def initialize(key, location, local)
+      def initialize(token, local)
 	@local_bool = local
 	if not local
-        	@deliverer = Le::Host::HTTPS::TCPSOCKET.new(key, location)
+        	@deliverer = Le::Host::HTTPS::TCPSOCKET.new(token)
         end   
       end
 
