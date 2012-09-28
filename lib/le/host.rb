@@ -13,9 +13,9 @@ module Le
     # Creates a new Logentries host, based on a user-key and location of destination file on logentries,
     # both must be provided correctly for a connection to be made.
 
-    def self.new(key, location, local)
+    def self.new(token, local)
 
-      Le::Host::HTTPS.new(key, location, local)
+      Le::Host::HTTPS.new(token, local)
       
     end
   
