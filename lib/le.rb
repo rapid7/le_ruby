@@ -13,11 +13,11 @@ require 'logger'
 
 module Le
 
- def self.new(key, location, local=false)
+ def self.new(token, local=false)
 
-   self.checkParams(key, location)
+   self.checkParams(token)
 
-   host = Le::Host.new(key, location, local)      
+   host = Le::Host.new(token, local)      
    logger = Logger.new(host)
    
    logger.formatter = host.formatter
@@ -25,14 +25,14 @@ module Le
    logger  
  end
 
- def self.checkParams(key, location)
-	if key == nil or location == nil
-		puts "\nLE: Incorrect parameters for Logentries Plugin!\n"
+ def self.checkParams(token)
+	if token == nil
+		puts "\nLE: Incorrect token parameter for Logentries Plugin!\n"
 	end
 
 	# Check if the key is valid UUID format
-	if (key =~ /\A(urn:uuid:)?[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}\z/i) == nil
-		puts "\nLE: It appears the LOGENTRIES_ACCOUNT_KEY you entered is invalid!\n"
+	if (token =~ /\A(urn:uuid:)?[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}\z/i) == nil
+		puts "\nLE: It appears the LOGENTRIES_TOKEN you entered is invalid!\n"
 	end
  end
 end
