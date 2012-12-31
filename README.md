@@ -30,7 +30,7 @@ To install the gem you must edit the Gemfile in your local heroku environment
 
 Add the following line:
 
-    gem 'le', '2.1.1'
+    gem 'le', '2.1.2'
 
 Then from the cmd line run the following command:
 
