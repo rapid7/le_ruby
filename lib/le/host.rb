@@ -14,19 +14,12 @@ module Le
       end
 
       def format_message(message_in, severity)
-        message_in = message_in.lstrip
+        message_in = message_in.inspect unless message_in.is_a?(String)
 
-        message_out = ""
-        message_out = "severity=#{severity}, "
-        case message_in
-        when String
-          message_out << message_in
-        else
-          message_out << message_in.inspect
-        end
-        message_out
+        "severity=#{severity}, #{message_in.lstrip}"
       end
     end
+
   end
 end
 
