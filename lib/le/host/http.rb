@@ -12,8 +12,9 @@ module Le
       def initialize(token, local)
 		@token = token
 		@local = local
-        @queue = Queue.new
+		@queue = Queue.new
 		@started = false
+		@thread = nil
       end
 
       def write(message)
@@ -24,24 +25,34 @@ module Le
 
 		@queue << "#{@token}#{message}\n"
 
-	    if not @started then
-			puts "LE: Starting asynchronous socket writer"
-			@thread = Thread.new{run()}
-			@started = true
+		if @started then
+			check_async_thread
+		else
+			start_async_thread
 		end
       end
 
+	  def start_async_thread
+		@thread = Thread.new{run()}
+		puts "LE: Asynchronous socket writer started"
+		@started = true
+	  end
+
+	  def check_async_thread
+		if not @thread.alive?
+			@thread = Thread.new{run()}
+			puts "LE: Asyncrhonous socket writer restarted"
+		end
+	  end
+
       def close
 		puts "LE: Closing asynchronous socket writer"
-		@thread.raise Interrupt
+		@started = false
       end
 
 	  def openConnection
 		puts "LE: Reopening connection to Logentries API server"
 		@conn = TCPSocket.new('api.logentries.com', 10000)
-
-		#@conn = OpenSSL::SSL::SSLSocket.new(@sock, OpenSSL::SSL::SSLContext.new())
-		#@conn.connect
 
 		puts "LE: Connection established"
 	  end
@@ -53,7 +64,7 @@ module Le
 			begin
 				openConnection
 				break
-			rescue OpenSSL::SSL::SSLError, TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError => e
+			rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError => e
 				puts "LE: Unable to connect to Logentries"
 			end
 			root_delay *= 2
@@ -71,31 +82,24 @@ module Le
 			@conn.sysclose
 			@conn = nil
 		end
-		#if @sock != nil
-		#	@sock.close
-		#	@sock = nil
-		#end
 	  end
 
 	  def run
-		begin
 		reopenConnection
 
+		while true
+			data = @queue.pop
 			while true
-				data = @queue.pop
-				while true
-					begin
-						@conn.write(data)
-					rescue OpenSSL::SSL::SSLError, TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEOUT, EOFError => e
-						reopenConnection
-						next
-					end
-					break
+				begin
+					@conn.write(data)
+				rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEOUT, EOFError => e
+					reopenConnection
+					next
 				end
+				break
 			end
-		rescue Interrupt 
-		  puts "LE: Asynchronous socket writer interrupted"
 		end
+		puts "LE: Closing Asyncrhonous socket writer"
 		closeConnection
 	  end
     end
