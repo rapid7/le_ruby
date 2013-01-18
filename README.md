@@ -45,7 +45,7 @@ In your `config/environments/production.rb` file, add the following:
 
     Rails.logger = Le.new('LOGENTRIES_TOKEN')
     
-If you want to keep the logs in the console just add true after the key:
+If you want to keep also the logs in the console just add true after the key:
 
     Rails.logger = Le.new('LOGENTRIES_TOKEN', true)
 
