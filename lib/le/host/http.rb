@@ -9,18 +9,17 @@ module Le
       include Le::Host::InstanceMethods
       attr_accessor :token, :queue, :started, :thread, :conn, :local
 
-      def initialize(token, local)
+      def initialize(token, console)
 		@token = token
-		@local = local
+		@console = console
 		@queue = Queue.new
 		@started = false
 		@thread = nil
       end
 
       def write(message)
-		if @local then
+		if @console then
 		  puts message
-		  return
 		end
 
 		@queue << "#{@token}#{message}\n"
