@@ -9,18 +9,18 @@ module Le
       include Le::Host::InstanceMethods
       attr_accessor :token, :queue, :started, :thread, :conn, :local
 
-      def initialize(token, local)
+      def initialize(token, console)
+    @logger = Logger.new("log/#{Rails.env}.log")
 		@token = token
-		@local = local
+		@console = console
 		@queue = Queue.new
 		@started = false
 		@thread = nil
       end
 
       def write(message)
-		if @local then
-		  puts message
-		  return
+		if @console then
+      @logger.add(Logger::Severity::UNKNOWN,message)
 		end
 
 		@queue << "#{@token}#{message}\n"
