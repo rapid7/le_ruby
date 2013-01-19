@@ -20,7 +20,7 @@ module Le
 
       def write(message)
 		if @console then
-      @logger << message
+      @logger.add(Logger::Severity::UNKNOWN,message)
 		end
 
 		@queue << "#{@token}#{message}\n"
