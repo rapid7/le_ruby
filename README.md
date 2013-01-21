@@ -49,6 +49,10 @@ If you want to keep also the logs in the console and int the log file just add t
 
     Rails.logger = Le.new('LOGENTRIES_TOKEN', true)
 
+You can also specify the default level of the logger by adding this :
+
+    Rails.logger = Le.new('LOGENTRIES_TOKEN', true, Logger:<level>)
+
 This will set the rails logger to use the Logentries logger in production and log to the console in development environment.
 
 For the `LOGENTRIES_TOKEN` argument, paste the token for the logfile you created earlier in the Logentries UI.
