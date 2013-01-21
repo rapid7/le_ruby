@@ -41,13 +41,17 @@ This will install the gem on your local environment.
 The next step is to configure the default rails logger to use the logentries
 logger.
 
-In your `config/environment.rb` file, add the following:
+In your environment configuration file ( for production : `config/environments/production.rb`), add the following:
 
-    if Rails.env.development?
-        Rails.logger = Le.new('LOGENTRIES_TOKEN', true)
-    else
-        Rails.logger = Le.new('LOGENTRIES_TOKEN')
-    end
+    Rails.logger = Le.new('LOGENTRIES_TOKEN')
+    
+If you want to keep also the logs in the console and int the log file just add true after the key:
+
+    Rails.logger = Le.new('LOGENTRIES_TOKEN', true)
+
+You can also specify the default level of the logger by adding this :
+
+    Rails.logger = Le.new('LOGENTRIES_TOKEN', true, Logger:<level>)
 
 This will set the rails logger to use the Logentries logger in production and log to the console in development environment.
 

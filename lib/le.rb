@@ -4,13 +4,13 @@ require 'logger'
 
 module Le
 
- def self.new(token, local=false)
+ def self.new(token, local=false, debug_level = Logger::DEBUG)
 
    self.checkParams(token)
 
    host = Le::Host.new(token, local)      
    logger = Logger.new(host)
-   logger.level = Logger::DEBUG
+   logger.level = debug_level
    
    if host.respond_to?(:formatter)
 	logger.formatter = host.formatter
