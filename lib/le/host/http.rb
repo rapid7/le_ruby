@@ -10,6 +10,7 @@ module Le
       attr_accessor :token, :queue, :started, :thread, :conn, :local
 
       def initialize(token, local)
+    @logger_console = Logger.new("log/#{Rails.env}.log")
 		@token = token
 		@local = local
 		@queue = Queue.new
@@ -19,8 +20,7 @@ module Le
 
       def write(message)
 		if @local then
-		  puts message
-		  return
+      @logger_console.add(Logger::Severity::UNKNOWN,message)
 		end
 
 		@queue << "#{@token}#{message}\n"
