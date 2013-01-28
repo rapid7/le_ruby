@@ -45,7 +45,7 @@ In your environment configuration file ( for production : `config/environments/p
 
     Rails.logger = Le.new('LOGENTRIES_TOKEN')
     
-If you want to keep also the logs in the console and int the log file just add true after the key:
+If you want to keep also the logs in the console and in the log file just add true after the key:
 
     Rails.logger = Le.new('LOGENTRIES_TOKEN', true)
 
