@@ -51,7 +51,7 @@ If you want to keep also the logs in the console and in the log file just add tr
 
 You can also specify the default level of the logger by adding this :
 
-    Rails.logger = Le.new('LOGENTRIES_TOKEN', true, Logger:<level>)
+    Rails.logger = Le.new('LOGENTRIES_TOKEN', true, Logger::<level>)
 
 This will set the rails logger to use the Logentries logger in production and log to the console in development environment.
 
