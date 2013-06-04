@@ -11,9 +11,9 @@ module Le
 
       def initialize(token, local)
 		if defined?(Rails)
-			@logger_console = Logger.new("log/#{Rails.env}.log")
+			@logger_console = ActiveSupport::Logger.new("log/#{Rails.env}.log")
 		else
-			@logger_console = Logger.new(STDOUT)
+			@logger_console = ActiveSupport::Logger.new(STDOUT)
 		end
 		@token = token
 		@local = local
@@ -24,7 +24,7 @@ module Le
 
       def write(message)
 		if @local then
-			@logger_console.add(Logger::Severity::UNKNOWN,message)
+			@logger_console.add(ActiveSupport::Logger::Severity::UNKNOWN,message)
 		end
 
 		@queue << "#{@token}#{message}\n"
