@@ -9,7 +9,7 @@ module Le
    self.checkParams(token)
 
    host = Le::Host.new(token, local)      
-   logger = Logger.new(host)
+   logger = ActiveSupport::Logger.new(host)
    logger.level = debug_level
    
    if host.respond_to?(:formatter)
