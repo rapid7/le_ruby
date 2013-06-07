@@ -45,15 +45,17 @@ In your environment configuration file ( for production : `config/environments/p
 
     Rails.logger = Le.new('LOGENTRIES_TOKEN')
     
-If you want to keep also the logs in the console and in the log file just add true after the key:
+If you want to keep also the logs in the console and in the log file just add local parameter after the key:
 
-    Rails.logger = Le.new('LOGENTRIES_TOKEN', true)
+    Rails.logger = Le.new('LOGENTRIES_TOKEN', local: true)
 
-You can also specify the default level of the logger by adding this :
+If you want to print debug messages for the gem to a file called logentriesGem.log, add this:
 
-    Rails.logger = Le.new('LOGENTRIES_TOKEN', true, Logger::<level>)
+	Rails.logger = Le.new('LOGENTRIES_TOKEN', debug: true)
 
-This will set the rails logger to use the Logentries logger in production and log to the console in development environment.
+You can also specify the default level of the logger by adding a :
+
+    Rails.logger = Le.new('LOGENTRIES_TOKEN', log_level: Logger::<level>)
 
 For the `LOGENTRIES_TOKEN` argument, paste the token for the logfile you created earlier in the Logentries UI.
 

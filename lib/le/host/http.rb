@@ -7,9 +7,9 @@ module Le
   module Host
     class HTTP
       include Le::Host::InstanceMethods
-      attr_accessor :token, :queue, :started, :thread, :conn, :local
+      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug
 
-      def initialize(token, local)
+      def initialize(token, local, debug)
 		if defined?(Rails)
 			@logger_console = Logger.new("log/#{Rails.env}.log")
 		else
@@ -17,10 +17,29 @@ module Le
 		end
 		@token = token
 		@local = local
+		@debug = debug
 		@queue = Queue.new
 		@started = false
 		@thread = nil
+
+		if @debug then
+			self.init_debug
+		end
       end
+
+	  def init_debug
+			filePath = "logentriesGem.log"
+			if File.exist?('log/')
+				filePath = "log/logentriesGem.log"
+			end
+			@debug_logger = Logger.new(filePath)
+	  end
+
+	  def dbg(message)
+		if @debug then
+			@debug_logger.add(Logger::Severity::DEBUG,message)
+		end
+	  end
 
       def write(message)
 		if @local then
@@ -38,27 +57,27 @@ module Le
 
 	  def start_async_thread
 		@thread = Thread.new{run()}
-		puts "LE: Asynchronous socket writer started"
+		dbg "LE: Asynchronous socket writer started"
 		@started = true
 	  end
 
 	  def check_async_thread
 		if not @thread.alive?
 			@thread = Thread.new{run()}
-			puts "LE: Asyncrhonous socket writer restarted"
+			dbg "LE: Asyncrhonous socket writer restarted"
 		end
 	  end
 
       def close
-		puts "LE: Closing asynchronous socket writer"
+		dbg "LE: Closing asynchronous socket writer"
 		@started = false
       end
 
 	  def openConnection
-		puts "LE: Reopening connection to Logentries API server"
+		dbg "LE: Reopening connection to Logentries API server"
 		@conn = TCPSocket.new('api.logentries.com', 10000)
 
-		puts "LE: Connection established"
+		dbg "LE: Connection established"
 	  end
 
 	  def reopenConnection
@@ -69,14 +88,14 @@ module Le
 				openConnection
 				break
 			rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError => e
-				puts "LE: Unable to connect to Logentries"
+				dbg "LE: Unable to connect to Logentries"
 			end
 			root_delay *= 2
 			if root_delay >= 10 then
 				root_delay = 10
 			end
 			wait_for = (root_delay + rand(root_delay)).to_i
-			puts "LE: Waiting for " + wait_for.to_s + "ms"
+			dbg "LE: Waiting for " + wait_for.to_s + "ms"
 			sleep(wait_for)
 		end
 	  end
@@ -103,7 +122,7 @@ module Le
 				break
 			end
 		end
-		puts "LE: Closing Asyncrhonous socket writer"
+		dbg "LE: Closing Asyncrhonous socket writer"
 		closeConnection
 	  end
     end
