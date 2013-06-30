@@ -6,6 +6,8 @@ require 'uri'
 module Le
   module Host
     class HTTP
+	  API_SERVER = 'data.logentries.com'
+	  API_PORT = 10000
       include Le::Host::InstanceMethods
       attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug
 
@@ -75,7 +77,7 @@ module Le
 
 	  def openConnection
 		dbg "LE: Reopening connection to Logentries API server"
-		@conn = TCPSocket.new('api.logentries.com', 10000)
+		@conn = TCPSocket.new(API_SERVER, API_PORT)
 
 		dbg "LE: Connection established"
 	  end
