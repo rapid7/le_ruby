@@ -6,7 +6,7 @@ require 'uri'
 module Le
   module Host
     class HTTP
-	  API_SERVER = 'data.logentries.com'
+	  API_SERVER = 'api.logentries.com'
 	  API_PORT = 10000
       include Le::Host::InstanceMethods
       attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug
