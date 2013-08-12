@@ -8,10 +8,43 @@ module Le
     class HTTP
 	  API_SERVER = 'api.logentries.com'
 	  API_PORT = 10000
-      include Le::Host::InstanceMethods
-      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug
+	  API_SSL_PORT = 20000
+	  API_CERT = '-----BEGIN CERTIFICATE-----
+MIIFSjCCBDKgAwIBAgIDBQMSMA0GCSqGSIb3DQEBBQUAMGExCzAJBgNVBAYTAlVT
+MRYwFAYDVQQKEw1HZW9UcnVzdCBJbmMuMR0wGwYDVQQLExREb21haW4gVmFsaWRh
+dGVkIFNTTDEbMBkGA1UEAxMSR2VvVHJ1c3QgRFYgU1NMIENBMB4XDTEyMDkxMDE5
+NTI1N1oXDTE2MDkxMTIxMjgyOFowgcExKTAnBgNVBAUTIEpxd2ViV3RxdzZNblVM
+ek1pSzNiL21hdktiWjd4bEdjMRMwEQYDVQQLEwpHVDAzOTM4NjcwMTEwLwYDVQQL
+EyhTZWUgd3d3Lmdlb3RydXN0LmNvbS9yZXNvdXJjZXMvY3BzIChjKTEyMS8wLQYD
+VQQLEyZEb21haW4gQ29udHJvbCBWYWxpZGF0ZWQgLSBRdWlja1NTTChSKTEbMBkG
+A1UEAxMSYXBpLmxvZ2VudHJpZXMuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+MIIBCgKCAQEAxcmFqgE2p6+N9lM2GJhe8bNUO0qmcw8oHUVrsneeVA66hj+qKPoJ
+AhGKxC0K9JFMyIzgPu6FvuVLahFZwv2wkbjXKZLIOAC4o6tuVb4oOOUBrmpvzGtL
+kKVN+sip1U7tlInGjtCfTMWNiwC4G9+GvJ7xORgDpaAZJUmK+4pAfG8j6raWgPGl
+JXo2hRtOUwmBBkCPqCZQ1mRETDT6tBuSAoLE1UMlxWvMtXCUzeV78H+2YrIDxn/W
+xd+eEvGTSXRb/Q2YQBMqv8QpAlarcda3WMWj8pkS38awyBM47GddwVYBn5ZLEu/P
+DiRQGSmLQyFuk5GUdApSyFETPL6p9MfV4wIDAQABo4IBqDCCAaQwHwYDVR0jBBgw
+FoAUjPTZkwpHvACgSs5LdW6gtrCyfvwwDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQW
+MBQGCCsGAQUFBwMBBggrBgEFBQcDAjAdBgNVHREEFjAUghJhcGkubG9nZW50cmll
+cy5jb20wQQYDVR0fBDowODA2oDSgMoYwaHR0cDovL2d0c3NsZHYtY3JsLmdlb3Ry
+dXN0LmNvbS9jcmxzL2d0c3NsZHYuY3JsMB0GA1UdDgQWBBRaMeKDGSFaz8Kvj+To
+j7eMOtT/zTAMBgNVHRMBAf8EAjAAMHUGCCsGAQUFBwEBBGkwZzAsBggrBgEFBQcw
+AYYgaHR0cDovL2d0c3NsZHYtb2NzcC5nZW90cnVzdC5jb20wNwYIKwYBBQUHMAKG
+K2h0dHA6Ly9ndHNzbGR2LWFpYS5nZW90cnVzdC5jb20vZ3Rzc2xkdi5jcnQwTAYD
+VR0gBEUwQzBBBgpghkgBhvhFAQc2MDMwMQYIKwYBBQUHAgEWJWh0dHA6Ly93d3cu
+Z2VvdHJ1c3QuY29tL3Jlc291cmNlcy9jcHMwDQYJKoZIhvcNAQEFBQADggEBAAo0
+rOkIeIDrhDYN8o95+6Y0QhVCbcP2GcoeTWu+ejC6I9gVzPFcwdY6Dj+T8q9I1WeS
+VeVMNtwJt26XXGAk1UY9QOklTH3koA99oNY3ARcpqG/QwYcwaLbFrB1/JkCGcK1+
+Ag3GE3dIzAGfRXq8fC9SrKia+PCdDgNIAFqe+kpa685voTTJ9xXvNh7oDoVM2aip
+v1xy+6OfZyGudXhXag82LOfiUgU7hp+RfyUG2KXhIRzhMtDOHpyBjGnVLB0bGYcC
+566Nbe7Alh38TT7upl/O5lA29EoSkngtUWhUnzyqYmEMpay8yZIV4R9AuUk2Y4HB
+kAuBvDPPm+C0/M4RLYs=
+-----END CERTIFICATE-----'
 
-      def initialize(token, local, debug)
+      include Le::Host::InstanceMethods
+      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl
+
+      def initialize(token, local, debug, ssl)
 		if defined?(Rails)
 			@logger_console = Logger.new("log/#{Rails.env}.log")
 		else
@@ -20,6 +53,7 @@ module Le
 		@token = token
 		@local = local
 		@debug = debug
+		@ssl = ssl
 		@queue = Queue.new
 		@started = false
 		@thread = nil
@@ -77,8 +111,18 @@ module Le
 
 	  def openConnection
 		dbg "LE: Reopening connection to Logentries API server"
-		@conn = TCPSocket.new(API_SERVER, API_PORT)
-
+		if @ssl then port = API_SSL_PORT else port = API_PORT end
+		socket = TCPSocket.new(API_SERVER, port)
+		if @ssl then
+			ssl_context = OpenSSL::SSL::SSLContext.new()
+			ssl_context.cert = OpenSSL::X509::Certificate.new(API_CERT)
+			ssl_socket = OpenSSL::SSL::SSLSocket.new(socket, ssl_context)
+			ssl_socket.sync_close = true
+			ssl_socket.connect
+			@conn = ssl_socket
+		else
+			@conn = socket
+		end
 		dbg "LE: Connection established"
 	  end
 

@@ -1,8 +1,8 @@
 module Le
   module Host
 
-    def self.new(token, local, debug)
-      Le::Host::HTTP.new(token, local, debug)
+    def self.new(token, local, debug, ssl)
+      Le::Host::HTTP.new(token, local, debug, ssl)
     end
 
     module InstanceMethods
