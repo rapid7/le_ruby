@@ -100,7 +100,6 @@ kAuBvDPPm+C0/M4RLYs=
 	  def check_async_thread
 		if not @thread.alive?
 			@thread = Thread.new{run()}
-			dbg "LE: Asyncrhonous socket writer restarted"
 		end
 	  end
 
