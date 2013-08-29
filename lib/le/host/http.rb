@@ -82,7 +82,7 @@ kAuBvDPPm+C0/M4RLYs=
           @logger_console.add(Logger::Severity::UNKNOWN, message)
         end
 
-        @queue << "#{@token}#{message}\n"
+        @queue << "#{ @token }#{ message }\n"
 
         if @started
           check_async_thread
@@ -98,7 +98,7 @@ kAuBvDPPm+C0/M4RLYs=
       end
 
       def check_async_thread
-        unless @thread.alive?
+        if not(@thread && @thread.alive?)
           @thread = Thread.new { run() }
         end
       end
@@ -128,26 +128,36 @@ kAuBvDPPm+C0/M4RLYs=
       def reopenConnection
         closeConnection
         root_delay = 0.1
-        while true
+        loop do
           begin
             openConnection
             break
           rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError
-            dbg "LE: Unable to connect to Logentries"
+            dbg "LE: Unable to connect to Logentries due to timeout(#{ $! })"
+          rescue
+            dbg "LE: Got exception in reopenConnection - #{ $! }"
+            raise
           end
           root_delay *= 2
           if root_delay >= 10
             root_delay = 10
           end
           wait_for = (root_delay + rand(root_delay)).to_i
-          dbg "LE: Waiting for " + wait_for.to_s + "ms"
+          dbg "LE: Waiting for #{ wait_for }ms"
           sleep(wait_for)
         end
       end
 
       def closeConnection
-        if @conn != nil
-          @conn.sysclose
+        begin
+          if @conn.respond_to?(:sysclose)
+            @conn.sysclose
+          elsif @conn.respond_to?(:close)
+            @conn.close
+          end
+        rescue
+          dbg "LE: couldn't close connection, close with exception - #{ $! }"
+        ensure
           @conn = nil
         end
       end
@@ -155,19 +165,26 @@ kAuBvDPPm+C0/M4RLYs=
       def run
         reopenConnection
 
-        while true
+        loop do
           data = @queue.pop
-          while true
+          loop do
             begin
               @conn.write(data)
             rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEOUT, EOFError
+              dbg "LE: Connection timeout(#{ $! }), try to reopen connection"
               reopenConnection
               next
+            rescue
+              dbg("LE: Got exception in run loop - #{ $! }")
+              raise
             end
+
             break
           end
         end
+
         dbg "LE: Closing Asyncrhonous socket writer"
+
         closeConnection
       end
     end
