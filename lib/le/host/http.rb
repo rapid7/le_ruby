@@ -6,10 +6,10 @@ require 'uri'
 module Le
   module Host
     class HTTP
-	  API_SERVER = 'api.logentries.com'
-	  API_PORT = 10000
-	  API_SSL_PORT = 20000
-	  API_CERT = '-----BEGIN CERTIFICATE-----
+      API_SERVER = 'api.logentries.com'
+      API_PORT = 10000
+      API_SSL_PORT = 20000
+      API_CERT = '-----BEGIN CERTIFICATE-----
 MIIFSjCCBDKgAwIBAgIDBQMSMA0GCSqGSIb3DQEBBQUAMGExCzAJBgNVBAYTAlVT
 MRYwFAYDVQQKEw1HZW9UcnVzdCBJbmMuMR0wGwYDVQQLExREb21haW4gVmFsaWRh
 dGVkIFNTTDEbMBkGA1UEAxMSR2VvVHJ1c3QgRFYgU1NMIENBMB4XDTEyMDkxMDE5
@@ -45,131 +45,148 @@ kAuBvDPPm+C0/M4RLYs=
       attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl
 
       def initialize(token, local, debug, ssl)
-		if defined?(Rails)
-			@logger_console = Logger.new("log/#{Rails.env}.log")
-		else
-			@logger_console = Logger.new(STDOUT)
-		end
-		@token = token
-		@local = local
-		@debug = debug
-		@ssl = ssl
-		@queue = Queue.new
-		@started = false
-		@thread = nil
+        if defined?(Rails)
+          @logger_console = Logger.new("log/#{Rails.env}.log")
+        else
+          @logger_console = Logger.new(STDOUT)
+        end
+        @token = token
+        @local = local
+        @debug = debug
+        @ssl = ssl
+        @queue = Queue.new
+        @started = false
+        @thread = nil
 
-		if @debug then
-			self.init_debug
-		end
+        if @debug
+          self.init_debug
+        end
       end
 
-	  def init_debug
-			filePath = "logentriesGem.log"
-			if File.exist?('log/')
-				filePath = "log/logentriesGem.log"
-			end
-			@debug_logger = Logger.new(filePath)
-	  end
+      def init_debug
+        filePath = "logentriesGem.log"
+        if File.exist?('log/')
+          filePath = "log/logentriesGem.log"
+        end
+        @debug_logger = Logger.new(filePath)
+      end
 
-	  def dbg(message)
-		if @debug then
-			@debug_logger.add(Logger::Severity::DEBUG,message)
-		end
-	  end
+      def dbg(message)
+        if @debug
+          @debug_logger.add(Logger::Severity::DEBUG, message)
+        end
+      end
 
       def write(message)
-		if @local then
-			@logger_console.add(Logger::Severity::UNKNOWN,message)
-		end
+        if @local
+          @logger_console.add(Logger::Severity::UNKNOWN, message)
+        end
 
-		@queue << "#{@token}#{message}\n"
+        @queue << "#{ @token }#{ message }\n"
 
-		if @started then
-			check_async_thread
-		else
-			start_async_thread
-		end
+        if @started
+          check_async_thread
+        else
+          start_async_thread
+        end
       end
 
-	  def start_async_thread
-		@thread = Thread.new{run()}
-		dbg "LE: Asynchronous socket writer started"
-		@started = true
-	  end
+      def start_async_thread
+        @thread = Thread.new { run() }
+        dbg "LE: Asynchronous socket writer started"
+        @started = true
+      end
 
-	  def check_async_thread
-		if not @thread.alive?
-			@thread = Thread.new{run()}
-		end
-	  end
+      def check_async_thread
+        if not(@thread && @thread.alive?)
+          @thread = Thread.new { run() }
+        end
+      end
 
       def close
-		dbg "LE: Closing asynchronous socket writer"
-		@started = false
+        dbg "LE: Closing asynchronous socket writer"
+        @started = false
       end
 
-	  def openConnection
-		dbg "LE: Reopening connection to Logentries API server"
-		if @ssl then port = API_SSL_PORT else port = API_PORT end
-		socket = TCPSocket.new(API_SERVER, port)
-		if @ssl then
-			ssl_context = OpenSSL::SSL::SSLContext.new()
-			ssl_context.cert = OpenSSL::X509::Certificate.new(API_CERT)
-			ssl_socket = OpenSSL::SSL::SSLSocket.new(socket, ssl_context)
-			ssl_socket.sync_close = true
-			ssl_socket.connect
-			@conn = ssl_socket
-		else
-			@conn = socket
-		end
-		dbg "LE: Connection established"
-	  end
+      def openConnection
+        dbg "LE: Reopening connection to Logentries API server"
+        port = @ssl ? API_SSL_PORT : API_PORT
+        socket = TCPSocket.new(API_SERVER, port)
+        if @ssl
+          ssl_context = OpenSSL::SSL::SSLContext.new()
+          ssl_context.cert = OpenSSL::X509::Certificate.new(API_CERT)
+          ssl_socket = OpenSSL::SSL::SSLSocket.new(socket, ssl_context)
+          ssl_socket.sync_close = true
+          ssl_socket.connect
+          @conn = ssl_socket
+        else
+          @conn = socket
+        end
+        dbg "LE: Connection established"
+      end
 
-	  def reopenConnection
-		closeConnection
-		root_delay = 0.1
-		while true
-			begin
-				openConnection
-				break
-			rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError => e
-				dbg "LE: Unable to connect to Logentries"
-			end
-			root_delay *= 2
-			if root_delay >= 10 then
-				root_delay = 10
-			end
-			wait_for = (root_delay + rand(root_delay)).to_i
-			dbg "LE: Waiting for " + wait_for.to_s + "ms"
-			sleep(wait_for)
-		end
-	  end
+      def reopenConnection
+        closeConnection
+        root_delay = 0.1
+        loop do
+          begin
+            openConnection
+            break
+          rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError
+            dbg "LE: Unable to connect to Logentries due to timeout(#{ $! })"
+          rescue
+            dbg "LE: Got exception in reopenConnection - #{ $! }"
+            raise
+          end
+          root_delay *= 2
+          if root_delay >= 10
+            root_delay = 10
+          end
+          wait_for = (root_delay + rand(root_delay)).to_i
+          dbg "LE: Waiting for #{ wait_for }ms"
+          sleep(wait_for)
+        end
+      end
 
-	  def closeConnection
-		if @conn != nil
-			@conn.sysclose
-			@conn = nil
-		end
-	  end
+      def closeConnection
+        begin
+          if @conn.respond_to?(:sysclose)
+            @conn.sysclose
+          elsif @conn.respond_to?(:close)
+            @conn.close
+          end
+        rescue
+          dbg "LE: couldn't close connection, close with exception - #{ $! }"
+        ensure
+          @conn = nil
+        end
+      end
 
-	  def run
-		reopenConnection
+      def run
+        reopenConnection
 
-		while true
-			data = @queue.pop
-			while true
-				begin
-					@conn.write(data)
-				rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEOUT, EOFError => e
-					reopenConnection
-					next
-				end
-				break
-			end
-		end
-		dbg "LE: Closing Asyncrhonous socket writer"
-		closeConnection
-	  end
+        loop do
+          data = @queue.pop
+          loop do
+            begin
+              @conn.write(data)
+            rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEOUT, EOFError
+              dbg "LE: Connection timeout(#{ $! }), try to reopen connection"
+              reopenConnection
+              next
+            rescue
+              dbg("LE: Got exception in run loop - #{ $! }")
+              raise
+            end
+
+            break
+          end
+        end
+
+        dbg "LE: Closing Asyncrhonous socket writer"
+
+        closeConnection
+      end
     end
   end
 end
