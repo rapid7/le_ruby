@@ -45,10 +45,12 @@ kAuBvDPPm+C0/M4RLYs=
       attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl
 
       def initialize(token, local, debug, ssl)
-        if defined?(Rails)
-          @logger_console = Logger.new("log/#{Rails.env}.log")
-        else
-          @logger_console = Logger.new(STDOUT)
+        if local
+          if defined?(Rails)
+            @logger_console = Logger.new("log/#{Rails.env}.log")
+          else
+            @logger_console = Logger.new(STDOUT)
+          end
         end
         @token = token
         @local = local
