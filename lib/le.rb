@@ -13,8 +13,13 @@ module Le
    opt_ssl = options[:ssl] || false
    opt_log_level = options[:log_level] || Logger::DEBUG
 
-   host = Le::Host.new(token, opt_local, opt_debug, opt_ssl)      
-   logger = Logger.new(host)
+   host = Le::Host.new(token, opt_local, opt_debug, opt_ssl)  
+
+   if defined?(ActiveSupport::Logger)
+    logger = ActiveSupport::Logger.new(host)
+   else    
+    logger = Logger.new(host)
+   end
 
    logger.level = opt_log_level
    
