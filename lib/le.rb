@@ -15,17 +15,17 @@ module Le
 
     host = Le::Host.new(token, opt_local, opt_debug, opt_ssl)
 
-    if defined?(ActiveSupport::Logger)
+    if defined?(ActiveSupport::TaggedLogging)
+      logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(host))
+    elsif defined?(ActiveSupport::Logger)
       logger = ActiveSupport::Logger.new(host)
+      logger.formatter = host.formatter if host.respond_to?(:formatter)
     else
       logger = Logger.new(host)
+      logger.formatter = host.formatter if host.respond_to?(:formatter)
     end
 
     logger.level = opt_log_level
-
-    if host.respond_to?(:formatter)
-      logger.formatter = host.formatter
-    end
 
     logger
   end
