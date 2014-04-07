@@ -10,10 +10,9 @@ Gem::Specification.new do |s|
 
 EOD
 
-  s.authors	= ["Mark Lacomber (Logentries)"]
-  s.email	= "marklacomber@gmail.com"
-  
+  s.authors	= ["Mark Lacomber"]
+  s.email	= "mark.lacomber@logentries.com"
+  s.homepage    = "https://github.com/logentries/le_ruby"
   s.files	= %w{ LE.gemspec } + Dir["#{dir}/lib/**/*.rb"]
   s.require_paths = ["lib"]
-
 end
