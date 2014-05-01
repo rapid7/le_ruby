@@ -18,7 +18,7 @@ Example
 Howto
 -----
 
-You must first register your account details with Logentries. 
+You must first register your account details with Logentries.
 
 Once you have logged in to Logentries, create a new host with a name of your choice.
 Inside this host, create a new logfile, selecting `Token TCP` as the source type.
@@ -44,7 +44,7 @@ logger.
 In your environment configuration file ( for production : `config/environments/production.rb`), add the following:
 
     Rails.logger = Le.new('LOGENTRIES_TOKEN')
-    
+
 If you want to keep also the logs in the console and in the log file just add local parameter after the key:
 
     Rails.logger = Le.new('LOGENTRIES_TOKEN', :local => true)
@@ -56,6 +56,10 @@ If you want the gem to use SSL when streaming logs to Logentries, add the ssl pa
 If you want to print debug messages for the gem to a file called logentriesGem.log, add this:
 
 	Rails.logger = Le.new('LOGENTRIES_TOKEN', :debug => true)
+
+If you want to use ActiveSupport::TaggedLogging logging, add this:
+
+    Rails.logger = Le.new('LOGENTRIES_TOKEN', :tag => true)
 
 You can also specify the default level of the logger by adding a :
 

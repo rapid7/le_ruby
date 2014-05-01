@@ -11,11 +11,12 @@ module Le
     opt_local     = options[:local]     || false
     opt_debug     = options[:debug]     || false
     opt_ssl       = options[:ssl]       || false
+    opt_tag       = options[:tag]       || false
     opt_log_level = options[:log_level] || Logger::DEBUG
 
     host = Le::Host.new(token, opt_local, opt_debug, opt_ssl)
 
-    if defined?(ActiveSupport::TaggedLogging)
+    if defined?(ActiveSupport::TaggedLogging) &&  opt_tag
       logger = ActiveSupport::TaggedLogging.new(Logger.new(host))
     elsif defined?(ActiveSupport::Logger)
       logger = ActiveSupport::Logger.new(host)
