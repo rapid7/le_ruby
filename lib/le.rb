@@ -16,7 +16,7 @@ module Le
     host = Le::Host.new(token, opt_local, opt_debug, opt_ssl)
 
     if defined?(ActiveSupport::TaggedLogging)
-      logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(host))
+      logger = ActiveSupport::TaggedLogging.new(Logger.new(host))
     elsif defined?(ActiveSupport::Logger)
       logger = ActiveSupport::Logger.new(host)
       logger.formatter = host.formatter if host.respond_to?(:formatter)
