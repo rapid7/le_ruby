@@ -28,6 +28,23 @@ describe Le::Host::HTTP do
       it { logger_console.instance_variable_get(:@logdev).dev.must_be_instance_of IO }
     end
 
+    describe "and Rails environment" do
+      before do
+        class Rails
+          def self.root
+            Pathname.new(File.dirname(__FILE__)).join('fixtures')
+          end
+          def self.env
+            'test'
+          end
+        end
+      end
+      after do
+        Object.send(:remove_const, :Rails)
+      end
+      it { logger_console.instance_variable_get(:@logdev).dev.must_be_instance_of File }
+    end
+
   end
 
 

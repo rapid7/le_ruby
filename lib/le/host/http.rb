@@ -49,7 +49,7 @@ S5ol3bQmY1mv78XKkOk=
       def initialize(token, local, debug, ssl)
         if local
           if defined?(Rails)
-            @logger_console = Logger.new("log/#{Rails.env}.log")
+            @logger_console = Logger.new(Rails.root.join("log","#{Rails.env}.log"))
           else
             @logger_console = Logger.new(STDOUT)
           end
