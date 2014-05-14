@@ -6,6 +6,7 @@ require 'uri'
 module Le
   module Host
     class HTTP
+      LIBRARY_IDENTIFIER = '###R01###'
       API_SERVER = 'api.logentries.com'
       API_PORT = 10000
       API_SSL_PORT = 20000
@@ -58,6 +59,7 @@ S5ol3bQmY1mv78XKkOk=
         @debug = debug
         @ssl = ssl
         @queue = Queue.new
+        @queue << "#{@token}#{LIBRARY_IDENTIFIER}\n"
         @started = false
         @thread = nil
 
