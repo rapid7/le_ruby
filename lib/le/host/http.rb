@@ -85,7 +85,15 @@ S5ol3bQmY1mv78XKkOk=
           @logger_console.add(Logger::Severity::UNKNOWN, message)
         end
 
-        @queue << "#{ @token }#{ message }\n"
+        lines = message.split("\n")
+        if lines.length == 1
+          @queue << "#{ @token }#{ message }\n"
+        else
+          message_id = SecureRandom.urlsafe_base64(4)
+          lines.each_with_index do |part, index|
+            @queue << "#{ @token } [#{ message_id }.#{ index }] #{ part }\n"
+          end
+        end
 
         if @started
           check_async_thread
