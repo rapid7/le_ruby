@@ -89,7 +89,7 @@ S5ol3bQmY1mv78XKkOk=
         if lines.length == 1
           @queue << "#{ @token }#{ message }\n"
         else
-          message_id = SecureRandom.urlsafe_base64(4)
+          message_id = random_message_id
           lines.each_with_index do |part, index|
             @queue << "#{ @token } [#{ message_id }.#{ index }] #{ part }\n"
           end
@@ -198,6 +198,14 @@ S5ol3bQmY1mv78XKkOk=
 
         closeConnection
       end
+
+
+      private
+        def random_message_id
+          @random_message_id_sample_space ||= [*'0'..'9', *'a'..'z']
+          "#{(Time.now.to_f * 1000).to_i}.#{(0..3).map{ @random_message_id_sample_space.sample }.join}"
+        end
+        
     end
   end
 end
