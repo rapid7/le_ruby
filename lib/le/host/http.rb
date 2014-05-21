@@ -85,7 +85,7 @@ S5ol3bQmY1mv78XKkOk=
           @logger_console.add(Logger::Severity::UNKNOWN, message)
         end
 
-        @queue << "#{ @token }#{ message }\n"
+        @queue << message.gsub(/^/, "\1#{ @token } ")
 
         if @started
           check_async_thread
