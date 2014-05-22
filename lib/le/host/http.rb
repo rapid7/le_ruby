@@ -88,7 +88,12 @@ S5ol3bQmY1mv78XKkOk=
           @logger_console.add(Logger::Severity::UNKNOWN, message)
         end
 
-        @queue << "#{ @token }#{ message }\n"
+        if message.scan(/\n/).empty?
+          @queue << "#{ @token } #{ message }\n"
+        else
+          @queue << "#{ message.gsub(/^/, "\1#{ @token } [#{ random_message_id }] ") }\n"
+        end
+
 
         if @started
           check_async_thread
@@ -193,6 +198,12 @@ S5ol3bQmY1mv78XKkOk=
 
         closeConnection
       end
+
+      private
+        def random_message_id
+          @random_message_id_sample_space ||= [*'0'..'9', *'a'..'z']
+          (0..5).map{ @random_message_id_sample_space.sample }.join
+        end
     end
   end
 end
