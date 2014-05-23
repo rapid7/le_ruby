@@ -201,7 +201,7 @@ S5ol3bQmY1mv78XKkOk=
 
       private
         def random_message_id
-          @random_message_id_sample_space ||= [*'0'..'9', *'a'..'z']
+          @random_message_id_sample_space ||= ('0'..'9').to_a + ('A'..'Z').to_a
           (0..5).map{ @random_message_id_sample_space.sample }.join
         end
     end
