@@ -45,7 +45,7 @@ In your environment configuration file ( for production : `config/environments/p
 
     Rails.logger = Le.new('LOGENTRIES_TOKEN')
 
-If you want to local logging in addition to sending logs to logentries, just add local parameter after the key.
+If you want to keep logging locally in addition to sending logs to logentries, just add local parameter after the key.
 By default, this will write to the standard Rails log or to STDOUT if not using Rails:
 
     Rails.logger = Le.new('LOGENTRIES_TOKEN', :local => true)
