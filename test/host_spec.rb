@@ -7,9 +7,7 @@ describe Le::Host do
   let(:debug)   { false }
   let(:ssl)     { false }
   let(:host)    { Le::Host.new(token, local, debug, ssl) }
-  subject       { host }
 
-  it { subject.must_be_instance_of Le::Host::HTTP }
-  it { subject.local.must_equal false }
+  specify { host.must_be_instance_of Le::Host::HTTP }
 
 end

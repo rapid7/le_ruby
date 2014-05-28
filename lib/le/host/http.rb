@@ -51,11 +51,12 @@ S5ol3bQmY1mv78XKkOk=
           if defined?(Rails)
             @logger_console = Logger.new(Rails.root.join("log","#{Rails.env}.log"))
           else
-            @logger_console = Logger.new(STDOUT)
+            device = local.class <= TrueClass ? STDOUT : local
+            @logger_console = Logger.new(device)
           end
         end
         @token = token
-        @local = local
+        @local = !!local
         @debug = debug
         @ssl = ssl
         @queue = Queue.new

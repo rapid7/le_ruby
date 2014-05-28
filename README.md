@@ -45,9 +45,14 @@ In your environment configuration file ( for production : `config/environments/p
 
     Rails.logger = Le.new('LOGENTRIES_TOKEN')
 
-If you want to keep also the logs in the console and in the log file just add local parameter after the key:
+If you want to local logging in addition to sending logs to logentries, just add local parameter after the key.
+By default, this will write to the standard Rails log or to STDOUT if not using Rails:
 
     Rails.logger = Le.new('LOGENTRIES_TOKEN', :local => true)
+
+You may specify the local log device by providing a filename (String) or IO object (typically STDOUT, STDERR, or an open file):
+
+    Rails.logger = Le.new('LOGENTRIES_TOKEN', :local => 'log/my_custom_log.log')
 
 If you want the gem to use SSL when streaming logs to Logentries, add the ssl parameter and set it to true:
 
