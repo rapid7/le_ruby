@@ -51,12 +51,16 @@ S5ol3bQmY1mv78XKkOk=
 
       def initialize(token, local, debug, ssl)
         if local
-          if defined?(Rails)
-            @logger_console = Logger.new(Rails.root.join("log","#{Rails.env}.log"))
+          device = if local.class <= TrueClass
+            if defined?(Rails)
+              Rails.root.join("log","#{Rails.env}.log")
+            else
+              STDOUT
+            end
           else
-            device = local.class <= TrueClass ? STDOUT : local
-            @logger_console = Logger.new(device)
+            local
           end
+          @logger_console = Logger.new(device)
         end
         @token = token
         @local = !!local
