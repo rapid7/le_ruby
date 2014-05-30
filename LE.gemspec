@@ -3,10 +3,10 @@ require File.expand_path(File.join(dir, 'lib', 'le'))
 
 Gem::Specification.new do |s|
   s.name	= "le"
-  s.version	= "2.2.8"
+  s.version	= "2.2.9"
   s.date	= Time.now
   s.summary	= "Logentries plugin"
-  s.licenses    = ['MIT']
+  s.licenses    = ["MIT"]
   s.description	=<<EOD
 
 
