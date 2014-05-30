@@ -6,7 +6,9 @@ Gem::Specification.new do |s|
   s.version	= "2.2.8"
   s.date	= Time.now
   s.summary	= "Logentries plugin"
+  s.licenses    = ['MIT']
   s.description	=<<EOD
+
 
 EOD
 
