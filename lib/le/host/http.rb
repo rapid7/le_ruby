@@ -41,6 +41,9 @@ wVYQgpYWRRZ7bJyfRCJxzIdYF3qy/P9NWyZSlDUuv11s1GSFO2pNd34p59GacVAL
 BJE6y5eOPTSbtkmBW/ukaVYdI5NLXNer3IaK3fetV3LvYGOaX8hR45FI1pvyKYvf
 S5ol3bQmY1mv78XKkOk=
 -----END CERTIFICATE-----'
+      SHUTDOWN_COMMAND = "DIE!DIE!"  # magic command string for async worker to shutdown
+      SHUTDOWN_MAX_WAIT = 10         # max seconds to wait for queue to clear on shutdown
+      SHUTDOWN_WAIT_STEP = 0.2       # sleep duration (seconds) while waiting to shutdown
 
 
       include Le::Host::InstanceMethods
@@ -48,14 +51,19 @@ S5ol3bQmY1mv78XKkOk=
 
       def initialize(token, local, debug, ssl)
         if local
-          if defined?(Rails)
-            @logger_console = Logger.new("log/#{Rails.env}.log")
+          device = if local.class <= TrueClass
+            if defined?(Rails)
+              Rails.root.join("log","#{Rails.env}.log")
+            else
+              STDOUT
+            end
           else
-            @logger_console = Logger.new(STDOUT)
+            local
           end
+          @logger_console = Logger.new(device)
         end
         @token = token
-        @local = local
+        @local = !!local
         @debug = debug
         @ssl = ssl
         @queue = Queue.new
@@ -67,6 +75,7 @@ S5ol3bQmY1mv78XKkOk=
         if @debug
           self.init_debug
         end
+        at_exit { shutdown! }
       end
 
       def init_debug
@@ -178,6 +187,7 @@ S5ol3bQmY1mv78XKkOk=
 
         loop do
           data = @queue.pop
+          break if data == SHUTDOWN_COMMAND
           loop do
             begin
               @conn.write(data)
@@ -204,6 +214,20 @@ S5ol3bQmY1mv78XKkOk=
           @random_message_id_sample_space ||= ('0'..'9').to_a.concat(('A'..'Z').to_a)
           (0..5).map{ @random_message_id_sample_space.sample }.join
         end
+
+        # at_exit handler.
+        # Attempts to clear the queue and terminate the async worker cleanly before process ends.
+        def shutdown!
+          return unless @started
+          dbg "LE: commencing shutdown, queue has #{queue.size} entries to clear"
+          queue << SHUTDOWN_COMMAND
+          SHUTDOWN_MAX_WAIT.div(SHUTDOWN_WAIT_STEP).times do
+            break if queue.empty?
+            sleep SHUTDOWN_WAIT_STEP
+          end
+          dbg "LE: shutdown complete, queue is #{queue.empty? ? '' : 'not '}empty with #{queue.size} entries"
+        end
+
     end
   end
 end
