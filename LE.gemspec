@@ -1,9 +1,11 @@
-dir = File.dirname(__FILE__)
-require File.expand_path(File.join(dir, 'lib', 'le'))
+# -*- encoding: utf-8 -*-
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'le'
 
 Gem::Specification.new do |s|
   s.name	= "le"
-  s.version	= "2.2.9"
+  s.version	= "2.3.9"
   s.date	= Time.now
   s.summary	= "Logentries plugin"
   s.licenses    = ["MIT"]
@@ -12,9 +14,16 @@ Gem::Specification.new do |s|
 
 EOD
 
-  s.authors	= ["Mark Lacomber"]
-  s.email	= "mark.lacomber@logentries.com"
-  s.homepage    = "https://github.com/logentries/le_ruby"
-  s.files	= %w{ LE.gemspec } + Dir["#{dir}/lib/**/*.rb"]
-  s.require_paths = ["lib"]
+  gem.authors	= ["Mark Lacomber"]
+  gem.email	= "mark.lacomber@logentries.com"
+  gem.homepage    = "https://github.com/logentries/le_ruby"
+  gem.files         = `git ls-files`.split($/)
+  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
+  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
+  gem.require_paths = ["lib"]
+
+  gem.add_development_dependency "bundler"
+  gem.add_development_dependency "rake"
+  gem.add_development_dependency 'minitest'
+
 end
