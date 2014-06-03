@@ -3,13 +3,13 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'le'
 
-Gem::Specification.new do |s|
-  s.name	= "le"
-  s.version	= "2.3.9"
-  s.date	= Time.now
-  s.summary	= "Logentries plugin"
-  s.licenses    = ["MIT"]
-  s.description	=<<EOD
+Gem::Specification.new do |gem|
+  gem.name	= "le"
+  gem.version	= "2.3.9"
+  gem.date	= Time.now
+  gem.summary	= "Logentries plugin"
+  gem.licenses    = ["MIT"]
+  gem.description	=<<EOD
 
 
 EOD
