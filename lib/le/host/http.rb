@@ -191,7 +191,7 @@ S5ol3bQmY1mv78XKkOk=
           loop do
             begin
               @conn.write(data)
-            rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEOUT, EOFError
+            rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError
               dbg "LE: Connection timeout(#{ $! }), try to reopen connection"
               reopenConnection
               next
