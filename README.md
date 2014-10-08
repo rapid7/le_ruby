@@ -83,9 +83,13 @@ Enter user defined variables in your environment.rb file
 **User Defined Variables**
 
 token = ''     
+
 ssl = false
+
 datahub_endpoint = Array ["", "10000"]  
+
 host_id = ""  
+
 custom_host = Array[ false, ""]
 
 
