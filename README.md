@@ -79,14 +79,13 @@ DataHub Logging
 
 Enter user defined variables in your environment.rb file
 
-#### USER DEFINED VARIALBES #####
+USER DEFINED VARIALBES
 
 token = ''      # 'insert_token_here_inside_these_quotation_marks'
 ssl = false
 datahub_endpoint = Array ["", "10000"]  
 host_id = ""  
 custom_host = Array[ false, ""]
-### END USER DEFINED VARIABLES ###         
 
 DATAHUB_ENDPOINT USER-DEFINED ARRAY
 
