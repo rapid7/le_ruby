@@ -82,7 +82,7 @@ Enter user defined variables in your environment.rb file
 
 **User Defined Variables**
 
-token = ''      # 'insert_token_here_inside_these_quotation_marks'
+token = ''     
 ssl = false
 datahub_endpoint = Array ["", "10000"]  
 host_id = ""  
