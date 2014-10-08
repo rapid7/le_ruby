@@ -75,12 +75,13 @@ You can also specify the default level of the logger by adding a :
 
 For the `LOGENTRIES_TOKEN` argument, paste the token for the logfile you created earlier in the Logentries UI.
 
+
 Step for setting up DataHub 
 ---------------------------
 
 **datahub_endpoint - User Defined Array**
 
-datahub_endpoint = Array ["", "10000"]  
+datahub_endpoint = Array ["127.0.0.1", "10000"]  
 datahub_endpoint is a user defined variable array for a datahub_endpoint
 The 1st parameter is a String which is the DataHub Instance's IP Address.  Entering ANY value in this field will disable your Token-based
 logging, set your Token to "" and will direct all log events to your specified DataHub IP Address.
@@ -93,7 +94,7 @@ When using Datahub do not enable SSL = true
 
 **host_id**
 
-host_id = ""  
+host_id = "abc1234"  
 Enter_host_id inside the quotation marks.  Leaving this empty leave the host_id empty and thus not appear in your log events.
 
 
