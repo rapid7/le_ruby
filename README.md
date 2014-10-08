@@ -80,7 +80,7 @@ DataHub Logging
 
 Enter user defined variables in your environment.rb file
 
-User Defined Variables
+**User Defined Variables**
 
 token = ''      # 'insert_token_here_inside_these_quotation_marks'
 ssl = false
@@ -89,26 +89,26 @@ host_id = ""
 custom_host = Array[ false, ""]
 
 
-DATAHUB_ENDPOINT USER-DEFINED ARRAY
------------------------------------
+datahub_endpoint - User Defined Array
+-------------------------------------
 datahub_endpoint = Array ["", "10000"]  
 datahub_endpoint is a user defined variable array for a datahub_endpoint
 The 1st parameter is a String which is the DataHub Instance's IP Address.  Entering ANY value in this field will disable your Token-based
 logging, set your Token to "" and will direct all log events to your specified DataHub IP Address.
 
-The 2nd parameter is a String which is the DataHub Port value, default is 10000 but this can be changed on your DataHub Instanc
-This port number must be set, on your DataHub Machine's leproxy settings your /etc/leproxy/leproxyLocal.config file.
+The 2nd parameter is a String which is the DataHub Port value, default is 10000 but this can be changed on your DataHub Machine.
+This port number must be set, on your DataHub Machine's leproxy settings your /etc/leproxy/leproxyLocal.config file.  It's default is 10000
 NOTE: if datahub_endpoint has been assigned an IP address and SSL = true, your server will fail gracefully.
 When using Datahub do not enable SSL = true  
 
 
-HOST_ID
+host_id
 ------- 
 host_id = ""  
 Enter_host_id inside the quotation marks.  Leaving this empty leave the host_id empty and thus not appear in your log events.
 
 
-CUSTOM_HOST NAME - USER-DEFINED ARRAY 
+custom_host_name - User Defined Array
 -------------------------------------
 custom_host = Array[ false, ""]         
 The 1st parameter is a Boolean value to use the custom host name.
