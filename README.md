@@ -76,10 +76,11 @@ You can also specify the default level of the logger by adding a :
 For the `LOGENTRIES_TOKEN` argument, paste the token for the logfile you created earlier in the Logentries UI.
 
 DataHub Logging 
+---------------
 
 Enter user defined variables in your environment.rb file
 
-USER DEFINED VARIALBES
+User Defined Variables
 
 token = ''      # 'insert_token_here_inside_these_quotation_marks'
 ssl = false
@@ -87,8 +88,9 @@ datahub_endpoint = Array ["", "10000"]
 host_id = ""  
 custom_host = Array[ false, ""]
 
-DATAHUB_ENDPOINT USER-DEFINED ARRAY
 
+DATAHUB_ENDPOINT USER-DEFINED ARRAY
+-----------------------------------
 datahub_endpoint = Array ["", "10000"]  
 datahub_endpoint is a user defined variable array for a datahub_endpoint
 The 1st parameter is a String which is the DataHub Instance's IP Address.  Entering ANY value in this field will disable your Token-based
@@ -100,12 +102,14 @@ NOTE: if datahub_endpoint has been assigned an IP address and SSL = true, your s
 When using Datahub do not enable SSL = true  
 
 
-HOST_ID 
+HOST_ID
+------- 
 host_id = ""  
 Enter_host_id inside the quotation marks.  Leaving this empty leave the host_id empty and thus not appear in your log events.
 
 
 CUSTOM_HOST NAME - USER-DEFINED ARRAY 
+-------------------------------------
 custom_host = Array[ false, ""]         
 The 1st parameter is a Boolean value to use the custom host name.
 The 2nd parameter is a String which is the custom_host_name you'd like to assign.  
@@ -115,7 +119,7 @@ the socket.gethostname method.
 
 
 
-Using the above settings, you can now also specify the several of the optional settings of the logger by adding:
+Using the above user defined variable settings, you can now also specify the several of the optional arguments for the logger constructor by adding:
 
     Rails.logger = Le.new(token, :ssl=>ssl, :datahub_endpoint=>datahub_endpoint, :host_id=>host_id, :custom_host=>custom_host)
 
