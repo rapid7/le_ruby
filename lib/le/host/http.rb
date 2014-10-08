@@ -7,7 +7,9 @@ module Le
   module Host
     class HTTP
       LIBRARY_IDENTIFIER = '###R01### - Library initialised'
+#      API_SERVER = 'api.logentries.com'
       API_SERVER = 'api.logentries.com'
+
       API_PORT = 10000
       API_SSL_PORT = 20000
       API_CERT = '-----BEGIN CERTIFICATE-----
@@ -47,25 +49,82 @@ S5ol3bQmY1mv78XKkOk=
 
 
       include Le::Host::InstanceMethods
-      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl
+#!      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :dathub_ip, :datahub_port, :host_id, :custom_host, :host_name_enabled, :host_name
+      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :datahub_ip, :datahub_port, :datahub_endpoint, :host_id, :host_name_enabled, :host_name, :custom_host
 
-      def initialize(token, local, debug, ssl)
-        if local
-          device = if local.class <= TrueClass
-            if defined?(Rails)
-              Rails.root.join("log","#{Rails.env}.log")
+
+      def initialize(token, local, debug, ssl, datahub_endpoint, host_id, custom_host)
+          if local
+            device = if local.class <= TrueClass
+              if defined?(Rails)
+                Rails.root.join("log","#{Rails.env}.log")
+              else
+                STDOUT
+              end
             else
-              STDOUT
-            end
-          else
             local
-          end
+            end
           @logger_console = Logger.new(device)
+          end
+        
+          @local = !!local
+          @debug= debug  
+          @ssl = ssl
+
+        @datahub_endpoint = datahub_endpoint
+        if !@datahub_endpoint[0].empty?           
+          @datahub_enabled=true
+          @datahub_ip="#{@datahub_endpoint[0]}"
+          @datahub_port=@datahub_endpoint[1]
+
+          puts "DH_ip = #{datahub_ip}, DH_port=#{datahub_port}, DH_enabled=#{datahub_enabled}"
+        else
+          @datahub_enabled=false  
         end
-        @token = token
-        @local = !!local
-        @debug = debug
-        @ssl = ssl
+
+
+        if (@datahub_enabled && @ssl)
+          puts ("\n\nYou Cannot have DataHub and SSL enabled at the same time.  Please set SSL value to false in your environment.rb file or used Token-Based logging by leaving the Datahub IP address blank. Exiting application. \n\n")
+          exit 
+        end
+
+
+ #check if DataHub is enabled... if datahub is not enabled, set the token to the token's parameter.  If DH is enabled, make the token empty.
+        if (!datahub_enabled)
+           @token = token
+        else
+          @token = ''
+
+ #! NOTE THIS @datahub_port conditional MAY NEED TO BE CHANGED IF SSL CAN'T WORK WITH DH        
+          @datahub_port = @datahub_port.empty? ?  API_SSL_PORT : datahub_port
+          puts "first set DATAHUB PORT is #{datahub_port}"
+          @datahub_ip = datahub_ip
+        end
+
+        @host_name_enabled=custom_host[0];
+        @host_name= custom_host[1];
+         
+
+# Check if host_id is empty -- if not assign, if so, make it an empty string.
+       if !host_id.empty?
+          @host_id = host_id
+          @host_id = "host_id=#{host_id}"
+        else  
+          @host_id=''
+        end
+
+
+
+#assign host_name, if no host name is given and host_name_enabled = true... assign a host_name based on the machine name.
+       if @host_name_enabled
+          if host_name.empty?
+            @host_name=Socket.gethostname
+          end
+
+          @host_name="host_name=#{@host_name}"
+        end
+
+
         @queue = Queue.new
 	# Add identifer msg to queue to be sent first
         @queue << "#{@token}#{LIBRARY_IDENTIFIER}\n"
@@ -93,14 +152,23 @@ S5ol3bQmY1mv78XKkOk=
       end
 
       def write(message)
+
+        if !host_id.empty? 
+          message = "#{message} #{ host_id }"
+        end
+
+        if host_name_enabled
+          message="#{message} #{ host_name }"
+        end
+
         if @local
           @logger_console.add(Logger::Severity::UNKNOWN, message)
         end
 
         if message.scan(/\n/).empty?
-          @queue << "#{ @token } #{ message }\n"
+          @queue << "#{ @token } #{ message } \n" 
         else
-          @queue << "#{ message.gsub(/^/, "\1#{ @token } [#{ random_message_id }] ") }\n"
+          @queue << "#{ message.gsub(/^/, "\1#{ @token } [#{ random_message_id }]") }\n"
         end
 
 
@@ -130,8 +198,18 @@ S5ol3bQmY1mv78XKkOk=
 
       def openConnection
         dbg "LE: Reopening connection to Logentries API server"
-        port = @ssl ? API_SSL_PORT : API_PORT
-        socket = TCPSocket.new(API_SERVER, port)
+  
+
+        if !@datahub_enabled
+          port = @ssl ? API_SSL_PORT: API_PORT
+            puts "\n\nNOT datahub_enabled and port = #{port}\n\n"  
+          socket = TCPSocket.new(API_SERVER, port)      
+        else  
+          port = @datahub_port
+          socket = TCPSocket.new(@datahub_ip, port)
+        end
+
+         
         if @ssl
           ssl_context = OpenSSL::SSL::SSLContext.new()
           ssl_context.cert = OpenSSL::X509::Certificate.new(API_CERT)
@@ -191,7 +269,7 @@ S5ol3bQmY1mv78XKkOk=
           loop do
             begin
               @conn.write(data)
-            rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError
+            rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEOUT, EOFError
               dbg "LE: Connection timeout(#{ $! }), try to reopen connection"
               reopenConnection
               next

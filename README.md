@@ -41,7 +41,8 @@ Then from the cmd line run the following command:
 This will install the gem on your local environment.
 
 The next step is to configure the default rails logger to use the logentries
-logger.
+logger.  
+
 
 In your environment configuration file ( for production : `config/environments/production.rb`), add the following:
 
@@ -73,5 +74,52 @@ You can also specify the default level of the logger by adding a :
     Rails.logger = Le.new('LOGENTRIES_TOKEN', :log_level => Logger::<level>)
 
 For the `LOGENTRIES_TOKEN` argument, paste the token for the logfile you created earlier in the Logentries UI.
+
+DataHub Logging 
+
+Enter user defined variables in your environment.rb file
+
+#### USER DEFINED VARIALBES #####
+
+token = ''      # 'insert_token_here_inside_these_quotation_marks'
+ssl = false
+datahub_endpoint = Array ["", "10000"]  
+host_id = ""  
+custom_host = Array[ false, ""]         
+
+#### END USER DEFINED VARIABLES #####
+
+
+DATAHUB_ENDPOINT USER-DEFINED ARRAY
+datahub_endpoint = Array ["", "10000"]  
+    The following is a user defined variable array for a datahub_endpoint
+    The 1st parameter is a String which is the DataHub Instance's IP Address.  Entering ANY value in this field will disable your Token-based
+    logging, set your Token to "" and will direct all log events to your specified DataHub IP Address.
+    The 2nd parameter is a String which is the DataHub Port value, default is 10000 but this can be changed on your DataHub Instanc
+    This port number must be set, on your DataHub Machine's leproxy settings your /etc/leproxy/leproxyLocal.config file.
+
+    NOTE: if datahub_endpoint has been assigned an IP address and SSL = true, your server will fail gracefully.  
+    When using Datahub do not enable SSL = true  
+
+
+HOST_ID 
+host_id = ""  
+Enter_host_id inside the quotation marks.  Leaving this empty leave the host_id empty and thus not appear in your log events.
+
+
+CUSTOM_HOST NAME - USER-DEFINED ARRAY 
+custom_host = Array[ false, ""]         
+The 1st parameter is a Boolean value to use the custom host name.
+The 2nd parameter is a String which is the custom_host_name you'd like to assign.  
+
+If the 2nd parameter is left as "" and the Boolean value is true, the code will attempt to get your host machine's name using
+the socket.gethostname method.
+
+
+
+Using the above settings, you can now also specify the several of the optional settings of the logger by adding:
+
+    Rails.logger = Le.new(token, :ssl=>ssl, :datahub_endpoint=>datahub_endpoint, :host_id=>host_id, :custom_host=>custom_host)
+
 
 Now, simply use `Rails.logger.info("message")` inside your code to send logs to Logentries
