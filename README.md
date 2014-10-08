@@ -85,21 +85,20 @@ token = ''      # 'insert_token_here_inside_these_quotation_marks'
 ssl = false
 datahub_endpoint = Array ["", "10000"]  
 host_id = ""  
-custom_host = Array[ false, ""]         
-
-#### END USER DEFINED VARIABLES #####
-
+custom_host = Array[ false, ""]
+### END USER DEFINED VARIABLES ###         
 
 DATAHUB_ENDPOINT USER-DEFINED ARRAY
-datahub_endpoint = Array ["", "10000"]  
-    The following is a user defined variable array for a datahub_endpoint
-    The 1st parameter is a String which is the DataHub Instance's IP Address.  Entering ANY value in this field will disable your Token-based
-    logging, set your Token to "" and will direct all log events to your specified DataHub IP Address.
-    The 2nd parameter is a String which is the DataHub Port value, default is 10000 but this can be changed on your DataHub Instanc
-    This port number must be set, on your DataHub Machine's leproxy settings your /etc/leproxy/leproxyLocal.config file.
 
-    NOTE: if datahub_endpoint has been assigned an IP address and SSL = true, your server will fail gracefully.  
-    When using Datahub do not enable SSL = true  
+datahub_endpoint = Array ["", "10000"]  
+datahub_endpoint is a user defined variable array for a datahub_endpoint
+The 1st parameter is a String which is the DataHub Instance's IP Address.  Entering ANY value in this field will disable your Token-based
+logging, set your Token to "" and will direct all log events to your specified DataHub IP Address.
+
+The 2nd parameter is a String which is the DataHub Port value, default is 10000 but this can be changed on your DataHub Instanc
+This port number must be set, on your DataHub Machine's leproxy settings your /etc/leproxy/leproxyLocal.config file.
+NOTE: if datahub_endpoint has been assigned an IP address and SSL = true, your server will fail gracefully.
+When using Datahub do not enable SSL = true  
 
 
 HOST_ID 
