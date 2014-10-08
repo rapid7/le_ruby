@@ -75,23 +75,8 @@ You can also specify the default level of the logger by adding a :
 
 For the `LOGENTRIES_TOKEN` argument, paste the token for the logfile you created earlier in the Logentries UI.
 
-DataHub Logging 
----------------
-
-Enter user defined variables in your environment.rb file
-
-**User Defined Variables**
-
-token = ''     
-
-ssl = false
-
-datahub_endpoint = Array ["", "10000"]  
-
-host_id = ""  
-
-custom_host = Array[ false, ""]
-
+Step for setting up DataHub 
+---------------------------
 
 **datahub_endpoint - User Defined Array**
 
@@ -114,12 +99,11 @@ Enter_host_id inside the quotation marks.  Leaving this empty leave the host_id 
 
 **custom_host_name - User Defined Array**
 
-custom_host = Array[ false, ""]         
+custom_host = Array[ true, "mikes_app_server"]         
 The 1st parameter is a Boolean value to use the custom host name.
 The 2nd parameter is a String which is the custom_host_name you'd like to assign.  
 
-If the 2nd parameter is left as "" and the Boolean value is true, the code will attempt to get your host machine's name using
-the socket.gethostname method.
+If the 2nd parameter is left as "" and the Boolean value is true, the code will attempt to get your host machine's name using the socket.gethostname method.
 
 
 
