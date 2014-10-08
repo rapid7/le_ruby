@@ -104,7 +104,7 @@ custom_host = Array[ true, "mikes_app_server"]
 The 1st parameter is a Boolean value to use the custom host name.
 The 2nd parameter is a String which is the custom_host_name you'd like to assign.  
 
-If the 2nd parameter is left as "" and the Boolean value is true, the code will attempt to get your host machine's name using the socket.gethostname method.
+If the 2nd parameter is left as in custom_host = Array[ true, ""] the code will attempt to get your host machine's name using the socket.gethostname method.
 
 
 
