@@ -93,8 +93,7 @@ host_id = ""
 custom_host = Array[ false, ""]
 
 
-datahub_endpoint - User Defined Array
--------------------------------------
+**datahub_endpoint - User Defined Array**
 datahub_endpoint = Array ["", "10000"]  
 datahub_endpoint is a user defined variable array for a datahub_endpoint
 The 1st parameter is a String which is the DataHub Instance's IP Address.  Entering ANY value in this field will disable your Token-based
@@ -106,14 +105,12 @@ NOTE: if datahub_endpoint has been assigned an IP address and SSL = true, your s
 When using Datahub do not enable SSL = true  
 
 
-host_id
-------- 
+**host_id**
 host_id = ""  
 Enter_host_id inside the quotation marks.  Leaving this empty leave the host_id empty and thus not appear in your log events.
 
 
-custom_host_name - User Defined Array
--------------------------------------
+**custom_host_name - User Defined Array**
 custom_host = Array[ false, ""]         
 The 1st parameter is a Boolean value to use the custom host name.
 The 2nd parameter is a String which is the custom_host_name you'd like to assign.  
