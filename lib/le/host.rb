@@ -1,8 +1,10 @@
 module Le
   module Host
 
-    def self.new(token, local, debug, ssl)
-      Le::Host::HTTP.new(token, local, debug, ssl)
+#!    def self.new(token, local, debug, ssl, datahub_enabled, datahub_ip, datahub_port, host_id, host_name_enabled, host_name)
+    def self.new(token, local, debug, ssl, datahub_endpoint, host_id, custom_host)
+
+      Le::Host::HTTP.new(token, local, debug, ssl, datahub_endpoint, host_id, custom_host)
     end
 
     module InstanceMethods

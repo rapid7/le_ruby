@@ -6,15 +6,26 @@ module Le
 
   def self.new(token, options={})
 
-    self.checkParams(token)
+    opt_local     = options[:local]                     || false
+    opt_debug     = options[:debug]                     || false
+    opt_ssl       = options[:ssl]                       || false
+    opt_tag       = options[:tag]                       || false
+    opt_log_level = options[:log_level]                 || Logger::DEBUG
 
-    opt_local     = options[:local]     || false
-    opt_debug     = options[:debug]     || false
-    opt_ssl       = options[:ssl]       || false
-    opt_tag       = options[:tag]       || false
-    opt_log_level = options[:log_level] || Logger::DEBUG
+    opt_datahub_enabled = options[:datahub_enabled]     || false
+    opt_datahub_endpoint = options[:datahub_endpoint]   || ['', 10000]
+    opt_datahub_ip = options[:datahub_ip]               || ''
+    opt_datahub_port    = options[:datahub_port]        || 10000
+    opt_host_id = options[:host_id] || ''
+    opt_host_name_enabled = options[:host_name_enabled] || false
+    opt_host_name = options[:host_name]                 || ''
+    opt_custom_host = options[:custom_host]             || [false, '']
+  
 
-    host = Le::Host.new(token, opt_local, opt_debug, opt_ssl)
+    self.checkParams(token, opt_datahub_enabled)
+
+
+    host = Le::Host.new(token, opt_local, opt_debug, opt_ssl, opt_datahub_endpoint, opt_host_id, opt_custom_host)
 
     if defined?(ActiveSupport::TaggedLogging) &&  opt_tag
       logger = ActiveSupport::TaggedLogging.new(Logger.new(host))
@@ -31,10 +42,16 @@ module Le
     logger
   end
 
-  def self.checkParams(token)
+  def self.checkParams(token, opt_datahub_enabled)
     # Check if the key is valid UUID format
-    if (token =~ /\A(urn:uuid:)?[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}\z/i) == nil
-       puts "\nLE: It appears the LOGENTRIES_TOKEN you entered is invalid!\n"
-    end
+
+    if (!opt_datahub_enabled)  # test Token only when DataHub is not enabled
+      if (token =~ /\A(urn:uuid:)?[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}\z/i) == nil
+         puts "\nLE: It appears the LOGENTRIES_TOKEN you entered is invalid!\n"
+      else
+        (token="")
+     end
+   end 
   end
+
 end
