@@ -76,8 +76,6 @@ S5ol3bQmY1mv78XKkOk=
           @datahub_enabled=true
           @datahub_ip="#{@datahub_endpoint[0]}"
           @datahub_port=@datahub_endpoint[1]
-
-          puts "DH_ip = #{datahub_ip}, DH_port=#{datahub_port}, DH_enabled=#{datahub_enabled}"
         else
           @datahub_enabled=false  
         end
@@ -97,7 +95,6 @@ S5ol3bQmY1mv78XKkOk=
 
  #! NOTE THIS @datahub_port conditional MAY NEED TO BE CHANGED IF SSL CAN'T WORK WITH DH        
           @datahub_port = @datahub_port.empty? ?  API_SSL_PORT : datahub_port
-          puts "first set DATAHUB PORT is #{datahub_port}"
           @datahub_ip = datahub_ip
         end
 
@@ -202,7 +199,6 @@ S5ol3bQmY1mv78XKkOk=
 
         if !@datahub_enabled
           port = @ssl ? API_SSL_PORT: API_PORT
-            puts "\n\nNOT datahub_enabled and port = #{port}\n\n"  
           socket = TCPSocket.new(API_SERVER, port)      
         else  
           port = @datahub_port
