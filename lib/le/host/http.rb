@@ -50,10 +50,10 @@ S5ol3bQmY1mv78XKkOk=
 
       include Le::Host::InstanceMethods
 #!      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :dathub_ip, :datahub_port, :host_id, :custom_host, :host_name_enabled, :host_name
-      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :datahub_ip, :datahub_port, :datahub_endpoint, :host_id, :host_name_enabled, :host_name, :custom_host
+      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :datahub_ip, :datahub_port, :datahub_endpoint, :host_id, :host_name_enabled, :host_name, :custom_host, :udp_port
 
 
-      def initialize(token, local, debug, ssl, datahub_endpoint, host_id, custom_host)
+      def initialize(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp_port)
           if local
             device = if local.class <= TrueClass
               if defined?(Rails)
@@ -66,24 +66,25 @@ S5ol3bQmY1mv78XKkOk=
             end
           @logger_console = Logger.new(device)
           end
-        
+
           @local = !!local
-          @debug= debug  
+          @debug= debug
           @ssl = ssl
+          @udp_port = udp_port
 
         @datahub_endpoint = datahub_endpoint
-        if !@datahub_endpoint[0].empty?           
+        if !@datahub_endpoint[0].empty?
           @datahub_enabled=true
           @datahub_ip="#{@datahub_endpoint[0]}"
           @datahub_port=@datahub_endpoint[1]
         else
-          @datahub_enabled=false  
+          @datahub_enabled=false
         end
 
 
         if (@datahub_enabled && @ssl)
           puts ("\n\nYou Cannot have DataHub and SSL enabled at the same time.  Please set SSL value to false in your environment.rb file or used Token-Based logging by leaving the Datahub IP address blank. Exiting application. \n\n")
-          exit 
+          exit
         end
 
 
@@ -93,20 +94,20 @@ S5ol3bQmY1mv78XKkOk=
         else
           @token = ''
 
- #! NOTE THIS @datahub_port conditional MAY NEED TO BE CHANGED IF SSL CAN'T WORK WITH DH        
+ #! NOTE THIS @datahub_port conditional MAY NEED TO BE CHANGED IF SSL CAN'T WORK WITH DH
           @datahub_port = @datahub_port.empty? ?  API_SSL_PORT : datahub_port
           @datahub_ip = datahub_ip
         end
 
         @host_name_enabled=custom_host[0];
         @host_name= custom_host[1];
-         
+
 
 # Check if host_id is empty -- if not assign, if so, make it an empty string.
        if !host_id.empty?
           @host_id = host_id
           @host_id = "host_id=#{host_id}"
-        else  
+        else
           @host_id=''
         end
 
@@ -150,7 +151,7 @@ S5ol3bQmY1mv78XKkOk=
 
       def write(message)
 
-        if !host_id.empty? 
+        if !host_id.empty?
           message = "#{message} #{ host_id }"
         end
 
@@ -163,7 +164,7 @@ S5ol3bQmY1mv78XKkOk=
         end
 
         if message.scan(/\n/).empty?
-          @queue << "#{ @token } #{ message } \n" 
+          @queue << "#{ @token } #{ message } \n"
         else
           @queue << "#{ message.gsub(/^/, "\1#{ @token } [#{ random_message_id }]") }\n"
         end
@@ -195,27 +196,36 @@ S5ol3bQmY1mv78XKkOk=
 
       def openConnection
         dbg "LE: Reopening connection to Logentries API server"
-  
 
-        if !@datahub_enabled
-          port = @ssl ? API_SSL_PORT: API_PORT
-          socket = TCPSocket.new(API_SERVER, port)      
-        else  
+        if @udp_port
+          host = API_SERVER
+          port = @udp_port
+        elsif @datahub_enabled
+          host = @datahub_ip
           port = @datahub_port
-          socket = TCPSocket.new(@datahub_ip, port)
+        else
+          host = API_SERVER
+          port = @ssl ? API_SSL_PORT: API_PORT
         end
 
-         
-        if @ssl
-          ssl_context = OpenSSL::SSL::SSLContext.new()
-          ssl_context.cert = OpenSSL::X509::Certificate.new(API_CERT)
-          ssl_socket = OpenSSL::SSL::SSLSocket.new(socket, ssl_context)
-          ssl_socket.sync_close = true
-          ssl_socket.connect
-          @conn = ssl_socket
+        if @udp_port
+          @conn = UDPSocket.new
+          @conn.connect(host, port)
         else
-          @conn = socket
+          socket = TCPSocket.new(host, port)
+
+          if @ssl
+            ssl_context = OpenSSL::SSL::SSLContext.new()
+            ssl_context.cert = OpenSSL::X509::Certificate.new(API_CERT)
+            ssl_socket = OpenSSL::SSL::SSLSocket.new(socket, ssl_context)
+            ssl_socket.sync_close = true
+            ssl_socket.connect
+            @conn = ssl_socket
+          else
+            @conn = socket
+          end
         end
+
         dbg "LE: Connection established"
       end
 
