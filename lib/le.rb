@@ -20,12 +20,13 @@ module Le
     opt_host_name_enabled = options[:host_name_enabled] || false
     opt_host_name = options[:host_name]                 || ''
     opt_custom_host = options[:custom_host]             || [false, '']
-  
 
-    self.checkParams(token, opt_datahub_enabled)
+    opt_udp_port = options[:udp_port]                   || nil
+
+    self.checkParams(token, opt_datahub_enabled, opt_udp_port)
 
 
-    host = Le::Host.new(token, opt_local, opt_debug, opt_ssl, opt_datahub_endpoint, opt_host_id, opt_custom_host)
+    host = Le::Host.new(token, opt_local, opt_debug, opt_ssl, opt_datahub_endpoint, opt_host_id, opt_custom_host, opt_udp_port)
 
     if defined?(ActiveSupport::TaggedLogging) &&  opt_tag
       logger = ActiveSupport::TaggedLogging.new(Logger.new(host))
@@ -42,16 +43,16 @@ module Le
     logger
   end
 
-  def self.checkParams(token, opt_datahub_enabled)
+  def self.checkParams(token, opt_datahub_enabled, opt_udp_port)
     # Check if the key is valid UUID format
 
-    if (!opt_datahub_enabled)  # test Token only when DataHub is not enabled
+    if (!opt_datahub_enabled && !opt_udp_port)  # test Token only when DataHub and UDP are not enabled
       if (token =~ /\A(urn:uuid:)?[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}\z/i) == nil
          puts "\nLE: It appears the LOGENTRIES_TOKEN you entered is invalid!\n"
       else
         (token="")
      end
-   end 
+   end
   end
 
 end

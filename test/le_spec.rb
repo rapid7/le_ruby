@@ -59,7 +59,7 @@ describe Le do
       end
 
       describe "File" do
-        let(:log_file) { File.new(local_test_log) }
+        let(:log_file) { File.new(local_test_log, 'w') }
 
         specify { logdev.must_be_instance_of Le::Host::HTTP }
         specify { logdev.local.must_equal true }
@@ -126,7 +126,7 @@ describe Le do
       end
 
       describe "File" do
-        let(:log_file) { File.new(local_test_log) }
+        let(:log_file) { File.new(local_test_log, 'w') }
 
         specify { logdev.must_be_instance_of Le::Host::HTTP }
         specify { logdev.local.must_equal true }

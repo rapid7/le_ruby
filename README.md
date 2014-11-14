@@ -23,7 +23,8 @@ Howto
 You must first register your account details with Logentries.
 
 Once you have logged in to Logentries, create a new host with a name of your choice.
-Inside this host, create a new logfile, selecting `Token TCP` as the source type.
+Inside this host, create a new logfile, selecting `Token TCP` (or `Plain TCP/UDP` if using UDP)
+as the source type.
 
 Heroku
 ------
@@ -73,10 +74,14 @@ You can also specify the default level of the logger by adding a :
 
     Rails.logger = Le.new('LOGENTRIES_TOKEN', :log_level => Logger::<level>)
 
-For the `LOGENTRIES_TOKEN` argument, paste the token for the logfile you created earlier in the Logentries UI.
+For the `LOGENTRIES_TOKEN` argument, paste the token for the logfile you created earlier in the Logentries UI or empty string for
+a UDP connection. Additionally, when connecting via UDP, be sure to specify a port using the udp_port parameter:
+
+    Rails.logger = Le.new('', :udp_port => 13287)
 
 
-Step for setting up DataHub 
+
+Step for setting up DataHub
 ---------------------------
 
 **datahub_endpoint - User Defined Array**
@@ -100,7 +105,7 @@ Enter_host_id inside the quotation marks.  Leaving this empty leave the host_id 
 
 **custom_host_name - User Defined Array**
 
-custom_host = Array[ true, "mikes_app_server"]         
+custom_host = Array[ true, "mikes_app_server"]
 The 1st parameter is a Boolean value to use the custom host name.
 The 2nd parameter is a String which is the custom_host_name you'd like to assign.  
 
