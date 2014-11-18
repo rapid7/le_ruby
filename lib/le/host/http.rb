@@ -1,6 +1,7 @@
 require 'socket'
 require 'openssl'
 require 'thread'
+require 'timeout'
 require 'uri'
 
 module Le
@@ -12,37 +13,6 @@ module Le
 
       API_PORT = 10000
       API_SSL_PORT = 20000
-      API_CERT = '-----BEGIN CERTIFICATE-----
-MIIFSjCCBDKgAwIBAgIDCQpNMA0GCSqGSIb3DQEBBQUAMGExCzAJBgNVBAYTAlVT
-MRYwFAYDVQQKEw1HZW9UcnVzdCBJbmMuMR0wGwYDVQQLExREb21haW4gVmFsaWRh
-dGVkIFNTTDEbMBkGA1UEAxMSR2VvVHJ1c3QgRFYgU1NMIENBMB4XDTE0MDQxNTEz
-NTcxNVoXDTE2MDkxMzA0MTMzMFowgcExKTAnBgNVBAUTIEhpL1RHbXlmUEpJYTFy
-b0NQdlJ1U1NNRVdLOFp0NUtmMRMwEQYDVQQLEwpHVDAzOTM4NjcwMTEwLwYDVQQL
-EyhTZWUgd3d3Lmdlb3RydXN0LmNvbS9yZXNvdXJjZXMvY3BzIChjKTEyMS8wLQYD
-VQQLEyZEb21haW4gQ29udHJvbCBWYWxpZGF0ZWQgLSBRdWlja1NTTChSKTEbMBkG
-A1UEAxMSYXBpLmxvZ2VudHJpZXMuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
-MIIBCgKCAQEAwGsgjVb/pn7Go1jqNQVFsN+VEMRFpu7bJ5i+Lv/gY9zXBDGULr3d
-j9/hB/pa49nLUpy9GsaFru2AjNoveoVoe5ng2QhZRlUn77hxkoZsaiD+rrH/D/Yp
-LP3b/pNQg+nNTC81uwbhlxjIoeMSaPGjr1SFjZ1StCprZKFRu3IV+2/wZ+STUz/L
-aA3r6J86DRptasbzYMkDyWlUzN3nhYUcPUNrd4jSk+soSDEuDpHMahgRdQBo6Dht
-EKCSY+vB5ZIgEydI7mra8ygRjXotvc0zeb8Jvo8ZhyLDwvxjgo9F6Li3h/tfAjRR
-4ngV7yg9o8MgXN852GMHpUxzqhygLeyqSQIDAQABo4IBqDCCAaQwHwYDVR0jBBgw
-FoAUjPTZkwpHvACgSs5LdW6gtrCyfvwwDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQW
-MBQGCCsGAQUFBwMBBggrBgEFBQcDAjAdBgNVHREEFjAUghJhcGkubG9nZW50cmll
-cy5jb20wQQYDVR0fBDowODA2oDSgMoYwaHR0cDovL2d0c3NsZHYtY3JsLmdlb3Ry
-dXN0LmNvbS9jcmxzL2d0c3NsZHYuY3JsMB0GA1UdDgQWBBRowYR/aaGeiRRQxbaV
-1PI8hS4m9jAMBgNVHRMBAf8EAjAAMHUGCCsGAQUFBwEBBGkwZzAsBggrBgEFBQcw
-AYYgaHR0cDovL2d0c3NsZHYtb2NzcC5nZW90cnVzdC5jb20wNwYIKwYBBQUHMAKG
-K2h0dHA6Ly9ndHNzbGR2LWFpYS5nZW90cnVzdC5jb20vZ3Rzc2xkdi5jcnQwTAYD
-VR0gBEUwQzBBBgpghkgBhvhFAQc2MDMwMQYIKwYBBQUHAgEWJWh0dHA6Ly93d3cu
-Z2VvdHJ1c3QuY29tL3Jlc291cmNlcy9jcHMwDQYJKoZIhvcNAQEFBQADggEBAAzx
-g9JKztRmpItki8XQoGHEbopDIDMmn4Q7s9k7L9nT5gn5XCXdIHnsSe8+/2N7tW4E
-iHEEWC5G6Q16FdXBwKjW2LrBKaP7FCRcqXJSI+cfiuk0uywkGBTXpqBVClQRzypd
-9vZONyFFlLGUwUC1DFVxe7T77Dv+pOPuJ7qSfcVUnVtzpLMMWJsDG6NHpy0JhsS9
-wVYQgpYWRRZ7bJyfRCJxzIdYF3qy/P9NWyZSlDUuv11s1GSFO2pNd34p59GacVAL
-BJE6y5eOPTSbtkmBW/ukaVYdI5NLXNer3IaK3fetV3LvYGOaX8hR45FI1pvyKYvf
-S5ol3bQmY1mv78XKkOk=
------END CERTIFICATE-----'
       SHUTDOWN_COMMAND = "DIE!DIE!"  # magic command string for async worker to shutdown
       SHUTDOWN_MAX_WAIT = 10         # max seconds to wait for queue to clear on shutdown
       SHUTDOWN_WAIT_STEP = 0.2       # sleep duration (seconds) while waiting to shutdown
@@ -215,11 +185,26 @@ S5ol3bQmY1mv78XKkOk=
           socket = TCPSocket.new(host, port)
 
           if @ssl
+	    cert_store = OpenSSL::X509::Store.new
+	    cert_store.set_default_paths
+
             ssl_context = OpenSSL::SSL::SSLContext.new()
-            ssl_context.cert = OpenSSL::X509::Certificate.new(API_CERT)
+	    ssl_context.cert_store = cert_store
+
+            ssl_version_candidates = [:TLSv1_2, :TLSv1_1, :TLSv1]
+            ssl_version_candidates = ssl_version_candidates.select { |version| OpenSSL::SSL::SSLContext::METHODS.include? version }
+            if ssl_version_candidates.empty?
+                raise "Could not find suitable TLS version"
+            end
+	    # currently we only set the version when we have no choice
+            ssl_context.ssl_version = ssl_version_candidates[0] if ssl_version_candidates.length == 1
+            ssl_context.verify_mode = OpenSSL::SSL::VERIFY_PEER
             ssl_socket = OpenSSL::SSL::SSLSocket.new(socket, ssl_context)
+            ssl_socket.hostname = host if ssl_socket.respond_to?(:hostname=)
             ssl_socket.sync_close = true
-            ssl_socket.connect
+            Timeout::timeout(10) do
+              ssl_socket.connect
+            end
             @conn = ssl_socket
           else
             @conn = socket
