@@ -7,8 +7,6 @@ require 'uri'
 module Le
   module Host
     class HTTP
-      LIBRARY_IDENTIFIER = '###R01### - Library initialised'
-#      API_SERVER = 'api.logentries.com'
       API_SERVER = 'api.logentries.com'
 
       API_PORT = 10000
@@ -94,8 +92,6 @@ module Le
 
 
         @queue = Queue.new
-	# Add identifer msg to queue to be sent first
-        @queue << "#{@token}#{LIBRARY_IDENTIFIER}\n"
         @started = false
         @thread = nil
 
