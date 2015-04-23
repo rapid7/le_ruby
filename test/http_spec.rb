@@ -8,6 +8,8 @@ describe Le::Host::HTTP do
   let(:debug)              { false }
   let(:ssl)                { false }
   let(:udp)                { nil }
+  let(:local_shift_age)    { 0 }
+  let(:local_shift_size)   { 1000000 }
 
   let(:datahub_endpoint)  { ["", 10000]}
   let(:host_id)           {""}
@@ -15,7 +17,7 @@ describe Le::Host::HTTP do
 
 
 #  let(:host)               { Le::Host::HTTP.new(token, local, debug, ssl) }
-  let(:host)               { Le::Host::HTTP.new(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp) }
+  let(:host)               { Le::Host::HTTP.new(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp, local_shift_age, local_shift_size) }
 
   let(:logger_console)     { host.instance_variable_get(:@logger_console) }
   let(:logger_console_dev) { logger_console.instance_variable_get(:@logdev).dev }
