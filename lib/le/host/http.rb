@@ -21,7 +21,7 @@ module Le
       attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :datahub_ip, :datahub_port, :datahub_endpoint, :host_id, :host_name_enabled, :host_name, :custom_host, :udp_port
 
 
-      def initialize(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp_port)
+      def initialize(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp_port, local_shift_age, local_shift_size)
           if local
             device = if local.class <= TrueClass
               if defined?(Rails)
@@ -32,7 +32,7 @@ module Le
             else
             local
             end
-          @logger_console = Logger.new(device)
+          @logger_console = Logger.new(device, local_shift_age, local_shift_size)
           end
 
           @local = !!local

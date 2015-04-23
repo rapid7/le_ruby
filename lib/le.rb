@@ -11,6 +11,8 @@ module Le
     opt_ssl       = options[:ssl]                       || false
     opt_tag       = options[:tag]                       || false
     opt_log_level = options[:log_level]                 || Logger::DEBUG
+    opt_local_shift_age = options[:local_shift_age]     || 0
+    opt_local_shift_size = options[:local_shift_size]   || 1048576
 
     opt_datahub_enabled = options[:datahub_enabled]     || false
     opt_datahub_endpoint = options[:datahub_endpoint]   || ['', 10000]
@@ -26,7 +28,7 @@ module Le
     self.checkParams(token, opt_datahub_enabled, opt_udp_port)
 
 
-    host = Le::Host.new(token, opt_local, opt_debug, opt_ssl, opt_datahub_endpoint, opt_host_id, opt_custom_host, opt_udp_port)
+    host = Le::Host.new(token, opt_local, opt_debug, opt_ssl, opt_datahub_endpoint, opt_host_id, opt_custom_host, opt_udp_port, opt_local_shift_age, opt_local_shift_size)
 
     if defined?(ActiveSupport::TaggedLogging) &&  opt_tag
       logger = ActiveSupport::TaggedLogging.new(Logger.new(host))
@@ -34,7 +36,7 @@ module Le
       logger = ActiveSupport::Logger.new(host)
       logger.formatter = host.formatter if host.respond_to?(:formatter)
     else
-      logger = Logger.new(host)
+      logger = Logger.new(host, opt_local_shift_age,opt_local_shift_size)
       logger.formatter = host.formatter if host.respond_to?(:formatter)
     end
 
