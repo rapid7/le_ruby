@@ -8,7 +8,9 @@ module Le
   module Host
     class HTTP
       API_SERVER = 'api.logentries.com'
-
+      DATA_ENDPOINT = 'data.logentries.com'
+      DATA_PORT_UNSECURE = 80
+      DATA_PORT_SECURE = 443
       API_PORT = 10000
       API_SSL_PORT = 20000
       SHUTDOWN_COMMAND = "DIE!DIE!"  # magic command string for async worker to shutdown
@@ -18,10 +20,10 @@ module Le
 
       include Le::Host::InstanceMethods
 #!      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :dathub_ip, :datahub_port, :host_id, :custom_host, :host_name_enabled, :host_name
-      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :datahub_ip, :datahub_port, :datahub_endpoint, :host_id, :host_name_enabled, :host_name, :custom_host, :udp_port
+      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :datahub_ip, :datahub_port, :datahub_endpoint, :host_id, :host_name_enabled, :host_name, :custom_host, :udp_port, :use_datahub_endpoint
 
 
-      def initialize(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp_port)
+      def initialize(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp_port, use_datahub_endpoint)
           if local
             device = if local.class <= TrueClass
               if defined?(Rails)
@@ -39,6 +41,7 @@ module Le
           @debug= debug
           @ssl = ssl
           @udp_port = udp_port
+          @use_datahub_endpoint = use_datahub_endpoint
 
         @datahub_endpoint = datahub_endpoint
         if !@datahub_endpoint[0].empty?
@@ -163,15 +166,24 @@ module Le
       def openConnection
         dbg "LE: Reopening connection to Logentries API server"
 
-        if @udp_port
-          host = API_SERVER
-          port = @udp_port
-        elsif @datahub_enabled
-          host = @datahub_ip
-          port = @datahub_port
-        else
-          host = API_SERVER
-          port = @ssl ? API_SSL_PORT: API_PORT
+        if @use_datahub_endpoint
+            host = DATA_ENDPOINT
+            if @ssl
+              port = DATA_PORT_SECURE
+            else
+              port = DATA_PORT_UNSECURE
+            end
+        else      
+          if @udp_port
+            host = API_SERVER
+            port = @udp_port
+          elsif @datahub_enabled
+            host = @datahub_ip
+            port = @datahub_port
+          else
+            host = API_SERVER
+            port = @ssl ? API_SSL_PORT: API_PORT
+          end
         end
 
         if @udp_port
