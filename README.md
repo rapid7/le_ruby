@@ -79,6 +79,10 @@ a UDP connection. Additionally, when connecting via UDP, be sure to specify a po
 
     Rails.logger = Le.new('', :udp_port => 13287)
 
+Users have the option of using `data.logentries.com` which uses ports 80 and 443 for insecure and secure connections respectively.
+    
+    Rails.logger = Le.new('', :data_endpoint => true)
+
 
 
 Step for setting up DataHub

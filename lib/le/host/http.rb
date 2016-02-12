@@ -20,10 +20,10 @@ module Le
 
       include Le::Host::InstanceMethods
 #!      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :dathub_ip, :datahub_port, :host_id, :custom_host, :host_name_enabled, :host_name
-      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :datahub_ip, :datahub_port, :datahub_endpoint, :host_id, :host_name_enabled, :host_name, :custom_host, :udp_port, :use_datahub_endpoint
+      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :datahub_ip, :datahub_port, :datahub_endpoint, :host_id, :host_name_enabled, :host_name, :custom_host, :udp_port, :use_data_endpoint
 
 
-      def initialize(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp_port, use_datahub_endpoint)
+      def initialize(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp_port, use_data_endpoint)
           if local
             device = if local.class <= TrueClass
               if defined?(Rails)
@@ -41,7 +41,7 @@ module Le
           @debug= debug
           @ssl = ssl
           @udp_port = udp_port
-          @use_datahub_endpoint = use_datahub_endpoint
+          @use_data_endpoint = use_data_endpoint
 
         @datahub_endpoint = datahub_endpoint
         if !@datahub_endpoint[0].empty?
@@ -166,7 +166,7 @@ module Le
       def openConnection
         dbg "LE: Reopening connection to Logentries API server"
 
-        if @use_datahub_endpoint
+        if @use_data_endpoint
             host = DATA_ENDPOINT
             if @ssl
               port = DATA_PORT_SECURE
