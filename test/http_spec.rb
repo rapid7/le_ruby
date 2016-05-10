@@ -12,10 +12,12 @@ describe Le::Host::HTTP do
   let(:datahub_endpoint)  { ["", 10000]}
   let(:host_id)           {""}
   let(:custom_host)       {[false, ""]}
+  let(:endpoint)       {false}
+
 
 
 #  let(:host)               { Le::Host::HTTP.new(token, local, debug, ssl) }
-  let(:host)               { Le::Host::HTTP.new(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp) }
+  let(:host)               { Le::Host::HTTP.new(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp, endpoint) }
 
   let(:logger_console)     { host.instance_variable_get(:@logger_console) }
   let(:logger_console_dev) { logger_console.instance_variable_get(:@logdev).dev }
