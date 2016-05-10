@@ -23,11 +23,12 @@ module Le
 
     opt_udp_port = options[:udp_port]                   || nil
     opt_use_data_endpoint = options[:data_endpoint]     || false
+    opt_use_blocking_request = options[:use_blocking_request]          || false
 
     self.checkParams(token, opt_datahub_enabled, opt_udp_port)
 
 
-    host = Le::Host.new(token, opt_local, opt_debug, opt_ssl, opt_datahub_endpoint, opt_host_id, opt_custom_host, opt_udp_port, opt_use_data_endpoint)
+    host = Le::Host.new(token, opt_local, opt_debug, opt_ssl, opt_datahub_endpoint, opt_host_id, opt_custom_host, opt_udp_port, opt_use_data_endpoint, opt_use_blocking_request)
 
     if defined?(ActiveSupport::TaggedLogging) &&  opt_tag
       logger = ActiveSupport::TaggedLogging.new(Logger.new(host))
