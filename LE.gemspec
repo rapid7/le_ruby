@@ -5,7 +5,7 @@ require 'le'
 
 Gem::Specification.new do |gem|
   gem.name	= "le"
-  gem.version	= "2.7.1"
+  gem.version	= "2.7.2"
   gem.date	= Time.now
   gem.summary	= "Logentries plugin"
   gem.licenses    = ["MIT"]
