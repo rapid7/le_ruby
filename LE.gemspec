@@ -5,7 +5,7 @@ require 'le'
 
 Gem::Specification.new do |gem|
   gem.name	= "le"
-  gem.version	= "2.7.2"
+  gem.version	= "2.7.3"
   gem.date	= Time.now
   gem.summary	= "Logentries plugin"
   gem.licenses    = ["MIT"]
@@ -14,9 +14,9 @@ Gem::Specification.new do |gem|
 
 EOD
 
-  gem.authors	= ["Mark Lacomber"]
-  gem.email	= "mark.lacomber@logentries.com"
-  gem.homepage    = "https://github.com/logentries/le_ruby"
+  gem.authors	= ["Mark Lacomber", "Stephen Hynes"]
+  gem.email	= "support@logentries.com"
+  gem.homepage    = "https://github.com/rapid7/le_ruby"
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
