@@ -7,7 +7,7 @@ require 'uri'
 module Le
   module Host
     class HTTP
-      API_SERVER = 'api.logentries.com'
+      API_SERVER = 'data.logentries.com'
       DATA_ENDPOINT = 'data.logentries.com'
       DATA_PORT_UNSECURE = 80
       DATA_PORT_SECURE = 443
