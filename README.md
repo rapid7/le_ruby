@@ -1,11 +1,10 @@
 Logging to Logentries in Ruby
 =============================
 
-[![Build Status](https://travis-ci.org/logentries/le_ruby.svg?branch=master)](https://travis-ci.org/logentries/le_ruby)
-
+[![Build Status](https://travis-ci.org/rapid7/le_ruby.svg?branch=master)](https://travis-ci.org/rapid7/le_ruby)
 This is a Logentries library for logging from Ruby platforms, including Heroku.
 
-It is available on github <https://github.com/logentries/le_ruby/> and rubygems
+It is available on github <https://github.com/rapid7/le_ruby/> and rubygems
 <http://rubygems.org/>.
 
 
