@@ -173,7 +173,7 @@ module Le
             else
               port = DATA_PORT_UNSECURE
             end
-        else      
+        else
           if @udp_port
             host = API_SERVER
             port = @udp_port
@@ -229,7 +229,7 @@ module Le
           begin
             openConnection
             break
-          rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError
+          rescue Timeout::Error, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError
             dbg "LE: Unable to connect to Logentries due to timeout(#{ $! })"
           rescue
             dbg "LE: Got exception in reopenConnection - #{ $! }"
@@ -268,7 +268,7 @@ module Le
           loop do
             begin
               @conn.write(data)
-            rescue TimeoutError, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError
+            rescue Timeout::Error, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError
               dbg "LE: Connection timeout(#{ $! }), try to reopen connection"
               reopenConnection
               next
