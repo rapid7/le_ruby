@@ -281,7 +281,7 @@ module Le
           end
         end
 
-        dbg "LE: Closing Asyncrhonous socket writer"
+        dbg "LE: Closing Asynchronous socket writer"
 
         closeConnection
       end
