@@ -8,7 +8,7 @@ module Le
 
     opt_local     = options[:local]                     || false
     opt_debug     = options[:debug]                     || false
-    opt_ssl       = options[:ssl]                       || true
+    opt_ssl       = !options.include?(:ssl) ? true : options[:ssl]
     opt_tag       = options[:tag]                       || false
     opt_log_level = options[:log_level]                 || Logger::DEBUG
 
