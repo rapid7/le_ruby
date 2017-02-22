@@ -20,10 +20,10 @@ module Le
 
       include Le::Host::InstanceMethods
 #!      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :dathub_ip, :datahub_port, :host_id, :custom_host, :host_name_enabled, :host_name
-      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :datahub_ip, :datahub_port, :datahub_endpoint, :host_id, :host_name_enabled, :host_name, :custom_host, :udp_port, :use_data_endpoint
+      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :datahub_ip, :datahub_port, :datahub_endpoint, :host_id, :host_name_enabled, :host_name, :custom_host, :udp_port, :use_data_endpoint, :use_blocking_request
 
 
-      def initialize(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp_port, use_data_endpoint)
+      def initialize(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp_port, use_data_endpoint, use_blocking_request)
           if local
             device = if local.class <= TrueClass
               if defined?(Rails)
@@ -42,6 +42,7 @@ module Le
           @ssl = ssl
           @udp_port = udp_port
           @use_data_endpoint = use_data_endpoint
+          @use_blocking_request = use_blocking_request
 
         @datahub_endpoint = datahub_endpoint
         if !@datahub_endpoint[0].empty?
@@ -132,17 +133,22 @@ module Le
           @logger_console.add(Logger::Severity::UNKNOWN, message)
         end
 
+        # Check async.
         if message.scan(/\n/).empty?
-          @queue << "#{ @token } #{ message } \n"
+          @message = "#{ @token } #{ message } \n"
         else
-          @queue << "#{ message.gsub(/^/, "\1#{ @token } [#{ random_message_id }]") }\n"
+          @message = "#{ message.gsub(/^/, "\1#{ @token } [#{ random_message_id }]") }\n"
         end
 
-
-        if @started
-          check_async_thread
+        unless @use_blocking_request
+          @queue << @message
+          if @started
+            check_async_thread
+          else
+            start_async_thread
+          end
         else
-          start_async_thread
+          run(@message)
         end
       end
 
@@ -259,11 +265,14 @@ module Le
         end
       end
 
-      def run
+      def run(data=nil)
         reopenConnection
 
         loop do
-          data = @queue.pop
+          # Get data from queue if we're async, otherwise use param.
+          unless @use_blocking_request
+            data = @queue.pop
+          end
           break if data == SHUTDOWN_COMMAND
           loop do
             begin
@@ -279,6 +288,8 @@ module Le
 
             break
           end
+          # Don't loop if we're not async.
+          data = SHUTDOWN_COMMAND if @use_blocking_request
         end
 
         dbg "LE: Closing Asynchronous socket writer"
