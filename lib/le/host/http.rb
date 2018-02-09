@@ -16,6 +16,15 @@ module Le
       SHUTDOWN_COMMAND = "DIE!DIE!"  # magic command string for async worker to shutdown
       SHUTDOWN_MAX_WAIT = 10         # max seconds to wait for queue to clear on shutdown
       SHUTDOWN_WAIT_STEP = 0.2       # sleep duration (seconds) while waiting to shutdown
+      CONNECTION_EXCEPTIONS = [
+        Timeout::Error,
+        Errno::EHOSTUNREACH,
+        Errno::ECONNREFUSED,
+        Errno::ECONNRESET,
+        Errno::ETIMEDOUT,
+        Errno::EPIPE,
+        EOFError,
+      ].freeze
 
 
       include Le::Host::InstanceMethods
@@ -229,7 +238,7 @@ module Le
           begin
             openConnection
             break
-          rescue Timeout::Error, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError
+          rescue *CONNECTION_EXCEPTIONS
             dbg "LE: Unable to connect to Logentries due to timeout(#{ $! })"
           rescue
             dbg "LE: Got exception in reopenConnection - #{ $! }"
@@ -268,7 +277,7 @@ module Le
           loop do
             begin
               @conn.write(data)
-            rescue Timeout::Error, Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError
+            rescue *CONNECTION_EXCEPTIONS
               dbg "LE: Connection timeout(#{ $! }), try to reopen connection"
               reopenConnection
               next
