@@ -1,11 +1,13 @@
-Logging to Logentries in Ruby
-=============================
+# Using InsightOps?
+Please use our updated [library](https://github.com/rapid7/r7insight_ruby) which supports specifying the region to send your log data to.
+
+------
+# About
 
 [![Build Status](https://travis-ci.org/rapid7/le_ruby.svg?branch=master)](https://travis-ci.org/rapid7/le_ruby)
-This is a Logentries library for logging from Ruby platforms, including Heroku.
+This is the legacy Logentries library for logging from Ruby platforms, including Heroku.
 
-# Using InsightOps?
-Please use our updated [library](https://github.com/rapid7/r7insight_ruby) which supports specifying region to send your log data to.
+------
 
 It is available on github <https://github.com/rapid7/le_ruby/> and rubygems
 <http://rubygems.org/>.
