@@ -1,3 +1,6 @@
+# Using InsightOps?
+Please use our updated [library](https://github.com/rapid7/r7insight_ruby) which supports specifying region to send your log data to.
+=============================
 Logging to Logentries in Ruby
 =============================
 
