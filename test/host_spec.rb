@@ -14,7 +14,6 @@ describe Le::Host do
   let(:custom_host)	{ [false, ""]}
   let(:data_endpoint) {true}
 
-  #let(:host)    { Le::Host.new(token, local, debug, ssl) }
   let(:host)     { Le::Host::HTTP.new(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp, data_endpoint) }
   specify { host.must_be_instance_of Le::Host::HTTP }
 

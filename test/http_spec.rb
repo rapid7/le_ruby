@@ -16,7 +16,6 @@ describe Le::Host::HTTP do
 
 
 
-#  let(:host)               { Le::Host::HTTP.new(token, local, debug, ssl) }
   let(:host)               { Le::Host::HTTP.new(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp, endpoint) }
 
   let(:logger_console)     { host.instance_variable_get(:@logger_console) }

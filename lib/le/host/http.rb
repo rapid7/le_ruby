@@ -17,31 +17,39 @@ module Le
       SHUTDOWN_MAX_WAIT = 10         # max seconds to wait for queue to clear on shutdown
       SHUTDOWN_WAIT_STEP = 0.2       # sleep duration (seconds) while waiting to shutdown
 
+      # Fix for
+      # warning: constant OpenSSL::SSL::SSLContext::METHODS is deprecated
+      ssl_context = OpenSSL::SSL::SSLContext
+      SSL_VERSIONS = if ssl_context.const_defined? :METHODS_MAP
+        ssl_context.const_get(:METHODS_MAP).keys
+      else
+        ssl_context::METHODS.reject { |method| method.match(/server|client/) }
+      end.sort.reverse
+
+      VIABLE_SSL_VERSIONS = [:TLSv1_2, :TLSv1_1, :TLSv1].select {|version| SSL_VERSIONS.include? version }
 
       include Le::Host::InstanceMethods
-#!      attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :dathub_ip, :datahub_port, :host_id, :custom_host, :host_name_enabled, :host_name
       attr_accessor :token, :queue, :started, :thread, :conn, :local, :debug, :ssl, :datahub_enabled, :datahub_ip, :datahub_port, :datahub_endpoint, :host_id, :host_name_enabled, :host_name, :custom_host, :udp_port, :use_data_endpoint
 
-
       def initialize(token, local, debug, ssl, datahub_endpoint, host_id, custom_host, udp_port, use_data_endpoint)
-          if local
-            device = if local.class <= TrueClass
-              if defined?(Rails)
-                Rails.root.join("log","#{Rails.env}.log")
-              else
-                STDOUT
-              end
+        if local
+          device = if local.class <= TrueClass
+            if defined?(Rails)
+              Rails.root.join("log","#{Rails.env}.log")
             else
-            local
+              STDOUT
             end
-          @logger_console = Logger.new(device)
+          else
+            local
           end
+          @logger_console = Logger.new(device)
+        end
 
-          @local = !!local
-          @debug= debug
-          @ssl = ssl
-          @udp_port = udp_port
-          @use_data_endpoint = use_data_endpoint
+        @local = !!local
+        @debug= debug
+        @ssl = ssl
+        @udp_port = udp_port
+        @use_data_endpoint = use_data_endpoint
 
         @datahub_endpoint = datahub_endpoint
         if !@datahub_endpoint[0].empty?
@@ -193,19 +201,15 @@ module Le
           socket = TCPSocket.new(host, port)
 
           if @ssl
-	    cert_store = OpenSSL::X509::Store.new
-	    cert_store.set_default_paths
+            raise "Could not find suitable TLS version" if VIABLE_SSL_VERSIONS.empty?
 
-            ssl_context = OpenSSL::SSL::SSLContext.new()
-	    ssl_context.cert_store = cert_store
+            ssl_context = OpenSSL::SSL::SSLContext.new
+            cert_store = OpenSSL::X509::Store.new
+            cert_store.set_default_paths
+            ssl_context.cert_store = cert_store
 
-            ssl_version_candidates = [:TLSv1_2, :TLSv1_1, :TLSv1]
-            ssl_version_candidates = ssl_version_candidates.select { |version| OpenSSL::SSL::SSLContext::METHODS.include? version }
-            if ssl_version_candidates.empty?
-                raise "Could not find suitable TLS version"
-            end
-	    # currently we only set the version when we have no choice
-            ssl_context.ssl_version = ssl_version_candidates[0] if ssl_version_candidates.length == 1
+            # currently we only set the version when we have no choice
+            ssl_context.ssl_version = VIABLE_SSL_VERSIONS[0] if VIABLE_SSL_VERSIONS.length == 1
             ssl_context.verify_mode = OpenSSL::SSL::VERIFY_PEER
             ssl_socket = OpenSSL::SSL::SSLSocket.new(socket, ssl_context)
             ssl_socket.hostname = host if ssl_socket.respond_to?(:hostname=)
