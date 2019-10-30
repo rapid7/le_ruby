@@ -1,11 +1,14 @@
-# Using InsightOps?
-Please use our updated [library](https://github.com/rapid7/r7insight_ruby) which supports specifying the region to send your log data to.
+# DEPRECATED
+
+**Please note that this library is deprecated, and will no longer be updated. Please use [the r7insight library](https://github.com/rapid7/r7insight_ruby) for new applications and consider upgrading your existing applications to it.** The new library is compatible with both Logentries (EU region) and InsightOps.
 
 ------
 # About
 
 [![Build Status](https://travis-ci.org/rapid7/le_ruby.svg?branch=master)](https://travis-ci.org/rapid7/le_ruby)
 This is the legacy Logentries library for logging from Ruby platforms, including Heroku.
+
+
 
 ------
 
