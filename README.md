@@ -8,8 +8,6 @@
 [![Build Status](https://travis-ci.org/rapid7/le_ruby.svg?branch=master)](https://travis-ci.org/rapid7/le_ruby)
 This is the legacy Logentries library for logging from Ruby platforms, including Heroku.
 
-
-
 ------
 
 It is available on github <https://github.com/rapid7/le_ruby/> and rubygems
