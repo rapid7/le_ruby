@@ -128,10 +128,3 @@ Using the above user defined variable settings, you can now also specify the sev
 
 
 Now, simply use `Rails.logger.info("message")` inside your code to send logs to Logentries
-
-
-Contact Support
-------
-
-Please email our support team at support@logentries.com if you need any help.
-
