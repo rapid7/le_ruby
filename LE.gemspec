@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
 
 EOD
 
-  gem.authors	= ["Mark Lacomber", "Stephen Hynes"]
+  gem.authors	= ["Rapid7"]
   gem.email	= "InsightOpsTeam@rapid7.com"
   gem.homepage    = "https://github.com/rapid7/le_ruby"
   gem.files         = `git ls-files`.split($/)
