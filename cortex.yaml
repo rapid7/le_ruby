@@ -1,0 +1,15 @@
+---
+info:
+  title: Le Ruby
+  description: Ruby logging support for logentries.com
+  x-cortex-git:
+    github:
+      alias: r7org
+      repository: rapid7/le_ruby
+  x-cortex-tag: le-ruby
+  x-cortex-type: service
+  x-cortex-domain-parents:
+  - tag: insightidr
+openapi: 3.0.1
+servers:
+- url: "/"
